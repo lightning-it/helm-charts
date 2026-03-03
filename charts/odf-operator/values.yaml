@@ -1,0 +1,38 @@
+---
+# Using sub-chart helper-operator
+helper-operator:
+  console_plugins:
+    enabled: true
+    syncwave: 5
+    plugins:
+      - odf-console
+    job_namespace: openshift-storage
+  operators:
+    odf-operator:
+      enabled: true
+      syncwave: '0'
+      namespace:
+        name: openshift-storage
+        create: true
+      subscription:
+        channel: stable-4.19
+        approval: Manual
+        operatorName: odf-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        csv: odf-operator.v4.19.6-rhodf
+      operatorgroup:
+        create: true
+        notownnamespace: false
+
+# Using sub-chart helper-status-checker
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: odf-operator
+      installCSV: odf-operator.v4.19.6-rhodf
+      namespace:
+        name: openshift-storage
+      serviceAccount:
+        name: "sa-odf"
