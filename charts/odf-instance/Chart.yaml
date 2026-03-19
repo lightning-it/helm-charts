@@ -2,4 +2,5 @@ apiVersion: v2
 name: odf-instance
 description: Chart to deploy and configure ODF storage cluster instance
 version: 1.0.0
-home: https://github.com/lightning-it/helm-charts/charts/odf-instance
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/odf-instance
