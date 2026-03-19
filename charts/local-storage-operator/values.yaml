@@ -1,0 +1,31 @@
+---
+# Using sub-chart helper-operator
+helper-operator:
+  operators:
+    local-storage-operator:
+      enabled: true
+      syncwave: '0'
+      namespace:
+        name: openshift-local-storage
+      subscription:
+        channel: stable
+        approval: Manual
+        operatorName: local-storage-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        csv: local-storage-operator.v4.21.0-202602280320
+      operatorgroup:
+        create: true
+        notownnamespace: false
+
+# Using sub-chart helper-status-checker
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: local-storage-operator
+      installCSV: local-storage-operator.v4.21.0-202602280320
+      namespace:
+        name: openshift-local-storage
+      serviceAccount:
+        name: "sa-lso"
