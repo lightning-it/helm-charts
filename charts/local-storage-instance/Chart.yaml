@@ -1,0 +1,6 @@
+apiVersion: v2
+name: local-storage-instance
+description: Chart to deploy and configure local storage operator instance
+version: 1.0.0
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/local-storage-instance
