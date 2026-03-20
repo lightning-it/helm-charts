@@ -1,0 +1,6 @@
+dependencies:
+- name: tpl
+  repository: https://charts.stderr.at/
+  version: 1.0.23
+digest: sha256:cacc5caf07afa224786311519cf78511c5f8d619f95a2829046829529c23fafa
+generated: "2025-08-08T14:52:19.275972183Z"

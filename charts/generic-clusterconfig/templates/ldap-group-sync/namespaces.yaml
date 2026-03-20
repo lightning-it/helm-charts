@@ -1,0 +1,37 @@
+{{- if .Values.ldapGroupSync.enabled }}
+{{/* Create namespaces referenced in group mappings */}}
+{{- $namespaces := list }}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.adminGroups }}
+  {{- if $mapping.namespace }}
+    {{- $namespaces = append $namespaces $mapping.namespace }}
+  {{- end }}
+{{- end }}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.editGroups }}
+  {{- if $mapping.namespace }}
+    {{- $namespaces = append $namespaces $mapping.namespace }}
+  {{- end }}
+{{- end }}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.viewGroups }}
+  {{- if $mapping.namespace }}
+    {{- $namespaces = append $namespaces $mapping.namespace }}
+  {{- end }}
+{{- end }}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.customRoleGroups }}
+  {{- if $mapping.namespace }}
+    {{- $namespaces = append $namespaces $mapping.namespace }}
+  {{- end }}
+{{- end }}
+
+{{- range $namespace := uniq $namespaces }}
+{{- if ne $namespace "default" }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+  labels:
+    {{- include "generic-clusterconfig.labels" $ | nindent 4 }}
+    app.kubernetes.io/component: ldap-group-sync
+{{- end }}
+{{- end }}
+{{- end }}

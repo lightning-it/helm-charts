@@ -1,0 +1,278 @@
+---
+autosizing:
+  master: false
+  worker: false
+  infra: false
+mcp:
+  infra: false
+machineConfig: false
+externalSecrets:
+  enabled: false
+  cluster_secret_store: hashicorp-vault
+  secretPath: null # calculate path by default
+
+# LDAP Group Sync Configuration
+ldapGroupSync:
+  enabled: false
+
+  # LDAP Configuration
+  ldap:
+    url: "ldaps://ipa.example.com"
+    bindDN: "uid=k8s-ldap,cn=users,cn=accounts,dc=example,dc=com"
+
+    groups:
+      baseDN: "cn=groups,cn=accounts,dc=example,dc=com"
+      filter: "(objectClass=groupOfNames)"
+    users:
+      baseDN: "cn=users,cn=accounts,dc=example,dc=com"
+
+    groupUIDAttribute: "dn"
+    groupNameAttributes: ["cn"]
+    groupMembershipAttributes: ["member"]
+    userUIDAttribute: "dn"
+    userNameAttributes: ["uid"]
+
+    tolerateMemberNotFoundErrors: true
+    tolerateMemberOutOfScopeErrors: true
+
+  secrets:
+    bindPassword:
+      secretName: "ldap-secret"
+      fileName: "bindPassword"
+    caCert:
+      configMapName: "ca-config-map"
+      fileName: "ca.crt"
+
+  cronjob:
+    schedule: "*/30 * * * *"
+    successfulJobsHistoryLimit: 3
+    failedJobsHistoryLimit: 3
+    image:
+      repository: "quay.io/openshift/origin-cli"
+      tag: "latest"
+      pullPolicy: "IfNotPresent"
+    resources: {}
+
+  rbac:
+    serviceAccountName: "ldap-group-syncer"
+    clusterRoleName: "ldap-group-syncer"
+    clusterRoleBindingName: "ldap-group-syncer"
+
+    # WICHTIG: Alle groupRoleMappings Felder müssen initialisiert sein
+    groupRoleMappings:
+      clusterAdminGroups: []
+      adminGroups: []
+      editGroups: []
+      viewGroups: []
+      customRoleGroups: []
+
+  namespace: "openshift-config"
+
+# Global Configuration
+global:
+  defaultNamespace: "default"
+  labels: {}
+  annotations: {}
+
+# -- Enable the settings and configuration of a project template.
+# The information of the template can be found in templates/projecttempalte.yaml
+# @default -- ''
+projecttemplate:
+  # -- Shall a project template be configured?
+  # @default -- false
+  enabled: false
+
+  # -- Name of the project template
+  # @default -- project-template
+  name: project-template
+
+# @ignore
+generic-cluster-config:
+  ############################
+  # DISABLE SELF PROVISIONER #
+  ############################
+  self_provisioner:
+    deactivate: true
+
+  ##############
+  # MONITORING #
+  ##############
+  monitoring:
+    enabled: true
+    enableUserWorkload: true
+
+    ################
+    # ALERTMANAGER #
+    ################
+    # Configuration for the cluster (main) Alertmanager
+    alertmanagerMain:
+      disable_local_alertmanager: false
+
+      secrets: []
+
+      # Add storage to Alertmanager to keep the data.
+      storage:
+        class: ocs-storagecluster-ceph-rbd
+        size: 2Gi
+
+    ##############
+    # PROMETHEUS #
+    ##############
+    prometheusK8s:
+
+      retention: 14d
+
+      # Add storage to Prometheus to keep the data.
+      storage:
+        class: ocs-storagecluster-ceph-rbd
+        size: 10Gi
+######################
+# IDENTITY PROVIDERS #
+######################
+idp:
+  # -- Enable IDP configuration
+  # @default -- false
+  enabled: false
+
+  # Define provider. Currently htpasswd, google and LDAP are supported
+  providers:
+    # -- Enable IDP configuration. You can still disable them individually.
+    # @default -- false
+    enabled: false
+
+    # -- Use HTPASSWD provider.
+    # @default -- ''
+    htpasswd:
+        # -- Provide a name for that provider. This will be visible on the login page.
+        # @default -- htpasswd
+      - name: HTPASSWD
+
+        # -- Enable htpasswd?
+        # @default -- false
+        enabled: false
+
+        # -- The name of the secret that holds the encrypted htpasswd information
+        # @default -- htpasswd-secret
+        secretname: htpasswd-secret
+
+    # -- Use GOOGLE provider.
+    # @default -- ''
+    google:
+        # -- Provide a name for that provider. This will be visible on the login page.
+        # @default -- sso
+      - name: sso
+
+        # -- Enable htpasswd?
+        # @default -- false
+        enabled: false
+
+        # -- The name of the secret that holds the encrypted google information
+        # @default -- google-secret
+        secretname: google-secret
+
+        # -- Client ID for the Google OAuth2.0
+        # @default -- ''
+        clientID: 'clientID'
+
+        # -- hosted domain that specifies the Google Apps domain that users must belong to in order to log in
+        # @default -- my.com
+        hostedDomain: 'my.com'
+
+        # -- Mapping method for the Google provider.
+        # @default -- claim
+        mappingMethod: claim
+
+    # -- User LDAP provider.
+    # @default -- ''
+    ldap:
+        # -- Provide a name for that provider. This will be visible on the login page.
+        # @default -- ldap
+      - name: LDAP
+
+        # -- Enable htpasswd?
+        # @default -- false
+        enabled: false
+
+        # -- URL to the LDAP server
+        # @default -- ''
+        url: 127.0.0.1
+
+        # -- Is the connection to the LDAP server insecure or not?
+        # @default -- true
+        insecure: true
+
+        # -- BindDN for the LDAP connection
+        binddn: your-bindDN
+
+        # -- Name of the secret that stores the bindPassword
+        # @default: ldap-secret
+        secretname: ldap-secret
+
+        # -- Name of the ConfigMap the stores the certificate
+        # @default -- ca-config-map
+        cmname: ca-config-map
+
+        # -- List of attributes to use as the preferred user name when provisioning a user for this identity. First non-empty attribute is used
+        # @default -- ''
+        preferredusername:
+          - sAMAccountName
+
+        # -- List of attributes to use as the identity. First non-empty attribute is used. At least one attribute is required. If none of the listed attribute have a value, authentication fails.
+        attributes:
+          email:
+            - mail
+          id:
+            - dn
+          name:
+            - cn
+
+alertmanager:
+  enabled: false
+  argocdServerSideApply: true
+  config:
+    global:
+      http_config:
+        proxy_from_environment: true
+      smtp_from: k8s@beexact.com
+      smtp_smarthost: beexact-com.mail.protection.outlook.com:25
+      smtp_hello: localhost
+      smtp_require_tls: true
+    inhibit_rules:
+      - equal:
+          - namespace
+          - alertname
+        source_matchers:
+          - severity = critical
+        target_matchers:
+          - severity =~ warning|info
+      - equal:
+          - namespace
+          - alertname
+        source_matchers:
+          - severity = warning
+        target_matchers:
+          - severity = info
+    receivers:
+      - name: Default
+        email_configs:
+          - to: technik+beexact@degert-it.de
+      - name: Watchdog
+      - name: Critical
+        email_configs:
+          - to: technik+beexact_critical@degert-it.de
+            send_resolved: true
+    route:
+      group_by:
+        - namespace
+      group_interval: 5m
+      group_wait: 30s
+      receiver: Default
+      repeat_interval: 12h
+      routes:
+        - matchers:
+            - alertname = Watchdog
+          receiver: Watchdog
+        - matchers:
+            - severity = critical
+          receiver: Critical
+applyYaml: null

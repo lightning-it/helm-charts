@@ -1,0 +1,14 @@
+{{- if .Values.alertmanager.enabled }}
+kind: Secret
+apiVersion: v1
+metadata:
+  name: alertmanager-main
+  namespace: openshift-monitoring
+  {{- if .Values.alertmanager.argocdServerSideApply }}
+  annotations:
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+  {{- end }}
+stringData:
+  alertmanager.yaml: |
+{{ .Values.alertmanager.config | indent 4 }}
+{{- end }}
