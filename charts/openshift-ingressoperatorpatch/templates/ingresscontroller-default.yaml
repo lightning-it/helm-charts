@@ -1,0 +1,15 @@
+﻿---
+apiVersion: operator.openshift.io/v1
+kind: IngressController
+metadata:
+  name: default
+  namespace: openshift-ingress-operator
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  routeAdmission:
+    wildcardPolicy: {{- if .Values.allowWildcards }} WildcardsAllowed {{- else }} WildcardsDisallowed  {{- end }}
+{{- if or .Values.default_ingress_dns_names (eq .Values.certificateSource "external-secrets") }}
+  defaultCertificate:
+    name: {{ .Values.default_ingress_certificate_secret }}
+{{- end }}
