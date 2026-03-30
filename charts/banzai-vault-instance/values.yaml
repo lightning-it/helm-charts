@@ -1,0 +1,125 @@
+---
+clustername: yourcluster
+baseDomain: example.com
+image: hashicorp/vault:1.21
+size: 5
+loglevel: info
+serviceAccount:
+  name: vault
+vault_externalConfig:
+  policies:
+    - name: admin
+      rules: path "auth/*"
+        {
+          capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+        }
+        path "/sys/auth*" {
+            capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+        }
+        path "sys/policies/acl/*"
+        {
+          capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+        }
+        path "sys/policies/acl"
+        {
+          capabilities = ["list"]
+        }
+        path "openshift/*"
+        {
+          capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+        }
+        path "database/static-creds/*" {
+          capabilities = [ "create", "read", "update", "delete", "list" ]
+        }
+        path "database/creds/*" {
+          capabilities = [ "create", "read", "update", "delete", "list" ]
+        }
+        path "database/roles/*" {
+          capabilities = [ "create", "read", "update", "delete", "list" ]
+        }
+        path "database/config/*" {
+          capabilities = [ "create", "read", "update", "delete", "list" ]
+        }
+        path "database/static-roles/*" {
+          capabilities = [ "create", "read", "update", "delete", "list" ]
+        }
+        path "sys/mounts/*"
+        {
+          capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+        }
+        path "sys/health"
+        {
+          capabilities = ["read", "sudo"]
+        }
+        path "sys/capabilities"
+        {
+          capabilities = ["create", "update"]
+        }
+        path "sys/capabilities-self"
+        {
+          capabilities = ["create", "update"]
+        }
+    - name: allow_secrets
+      rules: path "openshift/*" {
+          capabilities = ["read", "list"]
+        }
+    - name: allow_secrets_dev
+      rules: path "openshift/data/+/dev/*" {
+          capabilities = ["read", "list"]
+        }
+        path "openshift/data/+/shared/*" {
+          capabilities = ["read", "list"]
+        }
+        path "openshift/data/+/shared-dev/*" {
+          capabilities = ["read", "list"]
+        }
+    - name: allow_secrets_prod
+      rules: path "openshift/data/+/prod/*" {
+          capabilities = ["read", "list"]
+        }
+        path "openshift/data/+/shared/*" {
+          capabilities = ["read", "list"]
+        }
+        path "openshift/data/+/shared-prod/*" {
+          capabilities = ["read", "list"]
+        }
+    - name: allow_db_creds
+      rules: path "database/creds/*" {
+          capabilities = ["read"]
+        }
+    - name: allow_db_static_creds
+      rules: path "database/static-creds/*" {
+          capabilities = ["read"]
+        }
+  auth:
+    - type: kubernetes
+      roles:
+        - name: dev
+          bound_service_account_names: ["*"]
+          bound_service_account_namespaces: ["default", "ai-dev", "vault-infra"]
+          policies: [allow_secrets_dev, allow_db_creds, allow_db_static_creds]
+          ttl: 1h
+        - name: prod
+          bound_service_account_names: ["*"]
+          bound_service_account_namespaces: ["default", "ai-prod"]
+          policies: [allow_secrets_prod, allow_db_creds, allow_db_static_creds]
+          ttl: 1h
+    - type: approle
+      roles:
+          name: openshift-gitops
+          policies: allow_secrets
+          secret_id_ttl: 0s
+          token_num_uses: 0
+          token_ttl: 20m
+          token_max_ttl: 30m
+  secrets:
+    - type: kv
+      path: openshift
+      description: Secrets for openshift
+      options:
+        version: 2
+    - type: kv
+      path: betrieb
+      description: Secrets for operations
+      options:
+        version: 2
