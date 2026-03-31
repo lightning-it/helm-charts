@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cert-manager-cluster-issuer
+description: Master chart to deploy and configure Red Hat cert-manager cluster issuer
+version: 1.0.0
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/cert-manager-cluster-issuer 
