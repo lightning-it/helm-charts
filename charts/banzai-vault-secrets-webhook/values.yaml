@@ -1,0 +1,5 @@
+---
+vault-secrets-webhook:
+  securityContext:
+    runAsUser: null
+  configMapMutation: true
