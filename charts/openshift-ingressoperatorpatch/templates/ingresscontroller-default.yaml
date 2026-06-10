@@ -8,8 +8,8 @@ metadata:
     argocd.argoproj.io/sync-wave: "0"
 spec:
   routeAdmission:
-    wildcardPolicy: {{- if .Values.allowWildcards }} WildcardsAllowed {{- else }} WildcardsDisallowed  {{- end }}
-{{- if or .Values.default_ingress_dns_names (eq .Values.certificateSource "external-secrets") }}
+    wildcardPolicy: {{- if .Values.allowWildcards }} WildcardsAllowed {{- else }} WildcardsDisallowed {{- end }}
+{{- if .Values.ingress.enabled }}
   defaultCertificate:
-    name: {{ .Values.default_ingress_certificate_secret }}
+    name: {{ .Values.ingress.certificateSecret }}
 {{- end }}

@@ -1,4 +1,4 @@
-﻿{{- if and (or (.Values.default_ingress_dns_names) (.Values.default_api_dns_names)) .Values.root_ca }}
+﻿{{- if .Values.root_ca }}
 ---
 apiVersion: config.openshift.io/v1
 kind: Proxy

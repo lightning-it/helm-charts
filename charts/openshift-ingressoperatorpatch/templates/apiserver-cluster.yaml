@@ -1,4 +1,4 @@
-﻿{{- if .Values.default_api_dns_names }}
+﻿{{- if .Values.api.enabled }}
 ---
 apiVersion: config.openshift.io/v1
 kind: APIServer
@@ -10,7 +10,7 @@ metadata:
 spec:
   servingCerts:
     namedCertificates:
-      - names: {{ .Values.default_api_dns_names | toYaml | nindent 8 }}
+      - names: {{ .Values.api.dnsNames | toYaml | nindent 8 }}
         servingCertificate:
-          name: {{ .Values.default_api_certificate_secret }}
+          name: {{ .Values.api.certificateSecret }}
 {{- end }}

@@ -1,11 +1,15 @@
 ---
 allowWildcards: true
 
-default_ingress_certificate_secret: cert-default-ingress
-default_ingress_dns_names: []
+ingress:
+  enabled: true
+  certificateSecret: cert-default-ingress
+  dnsNames: []
 
-default_api_certificate_secret: cert-api
-default_api_dns_names: []
+api:
+  enabled: true
+  certificateSecret: cert-api
+  dnsNames: []
 
 root_ca: null
 
