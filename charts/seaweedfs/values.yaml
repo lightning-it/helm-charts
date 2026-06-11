@@ -1,0 +1,95 @@
+---
+seaweedfs:
+
+  global:
+    replication:
+      data: "002"
+
+  master:
+    replicas: 3
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: seaweedfs-master
+            topologyKey: kubernetes.io/hostname
+
+  volume:
+    replicas: 3
+
+    dataDirs:
+      - name: data
+        type: persistentVolumeClaim
+        size: 80Gi
+        storageClass: ocs-storagecluster-ceph-rbd
+
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: "1"
+        memory: 1Gi
+
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: seaweedfs-volume
+            topologyKey: kubernetes.io/hostname
+
+    podDisruptionBudget:
+      enabled: true
+      minAvailable: 2
+
+  filer:
+    replicas: 1
+
+    postgres:
+      enabled: true
+      host: seaweedfs-pg-rw.infra-seaweedfs.svc
+      port: 5432
+      database: seaweedfs
+
+    auth:
+      existingSecret: seaweedfs-db-user
+      usernameKey: username
+      passwordKey: password
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+
+  s3:
+    enabled: true
+    port: 8333
+
+    auth:
+      enabled: true
+
+    # wichtig für Loki Verhalten
+    enableAuthV2: true
+
+  # OpenShift Security Hardening
+  securityContext:
+    runAsNonRoot: true
+    fsGroup: 1000
+
+  # optional aber sinnvoll für Debug/Operations
+  metrics:
+    enabled: true
