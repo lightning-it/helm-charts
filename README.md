@@ -2,6 +2,7 @@
 
 <!-- BEGIN LIT_SHARED_RELEASE_MODEL -->
 
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lightning-it/helm-charts/badge)](https://scorecard.dev/viewer/?uri=github.com/lightning-it/helm-charts)
 [![CI](https://github.com/lightning-it/helm-charts/actions/workflows/repository-quality.yml/badge.svg?branch=develop)](https://github.com/lightning-it/helm-charts/actions/workflows/repository-quality.yml)
 
 ## Release and Quality Model
