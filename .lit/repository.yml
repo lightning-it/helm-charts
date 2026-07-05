@@ -1,0 +1,27 @@
+schema_version: 1
+managed_by: lightning-it/shared-assets
+repository: helm-charts
+visibility: public
+repository_type: helm_chart
+release_type: none
+artifact_type: helm_chart
+test_profiles:
+- pre-commit
+- helm-lint
+- helm-template
+- values-validation
+os_matrix:
+- ubuntu-latest
+product_matrix:
+- helm
+- kubernetes
+publishing_targets: []
+galaxy_publish: false
+quay_publish: false
+release_evidence: false
+heavy_incus_required: false
+readme_badges:
+- pre-commit
+- license
+workflows:
+  ci: repository-quality.yml
