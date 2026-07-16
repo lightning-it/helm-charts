@@ -18,6 +18,7 @@ permissions:
 
 env:
   COPILOT_REVIEWER_LOGIN: copilot-pull-request-reviewer
+  UNABLE_REVIEW_MARKER: unable to review this pull request
 
 concurrency:
   group: copilot-review-${{ github.event.pull_request.number }}
@@ -129,12 +130,13 @@ jobs:
 
               marker_count="$(
                 jq \
+                  --arg marker "${UNABLE_REVIEW_MARKER}" \
                   '[
                     .data.node.comments.nodes[]?
                     | select(
                         ((.body // "")
                         | ascii_downcase
-                        | contains("unable to review this pull request"))
+                        | contains($marker))
                       )
                   ]
                   | length' <<<"${response}"
@@ -193,6 +195,7 @@ jobs:
                 jq -r \
                   --arg head "${head_sha}" \
                   --arg reviewer "${COPILOT_REVIEWER_LOGIN}" \
+                  --arg marker "${UNABLE_REVIEW_MARKER}" \
                   '(.data.repository.pullRequest.reviews.nodes // [])[]
                     | select(
                         (.author.login // "") as $login
@@ -206,7 +209,7 @@ jobs:
                     | select(
                         ((.body // "")
                         | ascii_downcase
-                        | contains("unable to review this pull request")) == false
+                        | contains($marker)) == false
                       )
                     | select(.commit.oid == $head)
                     | .id' <<<"${response}"
