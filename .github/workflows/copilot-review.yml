@@ -136,7 +136,7 @@ jobs:
                     | select(
                         ((.body // "")
                         | ascii_downcase
-                        | contains($marker))
+                        | contains($marker | ascii_downcase))
                       )
                   ]
                   | length' <<<"${response}"
@@ -209,7 +209,7 @@ jobs:
                     | select(
                         ((.body // "")
                         | ascii_downcase
-                        | contains($marker)) == false
+                        | contains($marker | ascii_downcase)) == false
                       )
                     | select(.commit.oid == $head)
                     | .id' <<<"${response}"
