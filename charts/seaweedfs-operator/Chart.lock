@@ -1,0 +1,6 @@
+dependencies:
+- name: seaweedfs-operator
+  repository: https://seaweedfs.github.io/seaweedfs-operator/
+  version: 0.1.28
+digest: sha256:10f04a8c38c99d66e5267af8907b735891c45c77b8fb03b76ac4eeb0dc7db645
+generated: "2026-07-17T02:59:37.462171145Z"

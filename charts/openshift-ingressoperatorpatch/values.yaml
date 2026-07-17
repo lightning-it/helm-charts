@@ -2,12 +2,12 @@
 allowWildcards: true
 
 ingress:
-  enabled: true
+  enabled: false
   certificateSecret: cert-default-ingress
   dnsNames: []
 
 api:
-  enabled: true
+  enabled: false
   certificateSecret: cert-api
   dnsNames: []
 

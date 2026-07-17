@@ -233,8 +233,8 @@ alertmanager:
     global:
       http_config:
         proxy_from_environment: true
-      smtp_from: k8s@beexact.com
-      smtp_smarthost: beexact-com.mail.protection.outlook.com:25
+      smtp_from: k8s@example.com
+      smtp_smarthost: smtp.example.com:25
       smtp_hello: localhost
       smtp_require_tls: true
     inhibit_rules:
@@ -255,11 +255,11 @@ alertmanager:
     receivers:
       - name: Default
         email_configs:
-          - to: technik+beexact@degert-it.de
+          - to: ops@example.com
       - name: Watchdog
       - name: Critical
         email_configs:
-          - to: technik+beexact_critical@degert-it.de
+          - to: critical-alerts@example.com
             send_resolved: true
     route:
       group_by:

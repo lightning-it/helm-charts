@@ -22,7 +22,7 @@ apiserver:
     # -- List of names the certificate is valid
     # @default -- N/A
     cert_names:
-      - api.ocp.aws.ispworld.at
+      - api.cluster.example.com
 
     # -- Name of the secret that holds the certificate
     # @default -- api-certificate
@@ -584,7 +584,7 @@ monitoring:
     #       name: observability-alertmanager-accessor
     #     scheme: https
     #     staticConfigs:
-    #     - alertmanager-open-cluster-management-observability.apps.ocemgmt01.wien.at
+    #     - alertmanager.apps.management.example.com
     #     tlsConfig:
     #       ca:
     #         key: service-ca.crt
