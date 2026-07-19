@@ -6,6 +6,6 @@ home: >-
   https://github.com/lightning-it/helm-charts/tree/main/charts/banzai-vault-secrets-webhook
 dependencies:
   - name: vault-secrets-webhook
-    version: 1.22.2
+    version: 1.23.1
     repository: oci://ghcr.io/bank-vaults/helm-charts
 
