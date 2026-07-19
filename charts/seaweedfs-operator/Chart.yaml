@@ -6,6 +6,6 @@ home: >-
   https://github.com/lightning-it/helm-charts/tree/main/charts/seaweedfs-operator
 dependencies:
   - name: seaweedfs-operator
-    version: 0.1.28
+    version: 0.1.35
     repository: https://seaweedfs.github.io/seaweedfs-operator/
 
