@@ -1,7 +1,7 @@
 ---
 envName: "CHANGE_ME"
 cluster:
-  image: 'ghcr.io/cloudnative-pg/postgresql:18.1'
+  image: 'ghcr.io/cloudnative-pg/postgresql:18.4'
   name: test-db
   database: test_db
   username: test
