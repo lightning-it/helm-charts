@@ -1,0 +1,87 @@
+{{- if and .Values.backup.enabled .Values.backup.s3Backup.enabled .Values.backup.retention.enabled }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Values.cluster.name }}-backup-retention
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Values.cluster.name }}-backup-retention
+  namespace: {{ .Release.Namespace }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["get", "create"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Values.cluster.name }}-backup-retention
+  namespace: {{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.cluster.name }}-backup-retention
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ .Values.cluster.name }}-backup-retention
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Values.cluster.name }}-backup-retention
+  namespace: {{ .Release.Namespace }}
+spec:
+  schedule: {{ .Values.backup.retention.schedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 3600
+      backoffLimit: 0
+      template:
+        spec:
+          serviceAccountName: {{ .Values.cluster.name }}-backup-retention
+          restartPolicy: Never
+          containers:
+            - name: retention
+              image: {{ .Values.backup.retention.image }}
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -euo pipefail
+                  echo "=== Backup Retention - $(date -u) ==="
+
+                  # Get S3 credentials from the OBC secret
+                  S3_KEY=$(kubectl get secret {{ tpl .Values.backup.s3Backup.bucketName . }} -n {{ .Release.Namespace }} \
+                    -o jsonpath='{.data.AWS_ACCESS_KEY_ID}' | base64 -d)
+                  S3_SECRET=$(kubectl get secret {{ tpl .Values.backup.s3Backup.bucketName . }} -n {{ .Release.Namespace }} \
+                    -o jsonpath='{.data.AWS_SECRET_ACCESS_KEY}' | base64 -d)
+
+                  echo "Running barman-cloud-backup-delete with {{ .Values.backup.retentionPolicy }} retention..."
+                  kubectl exec {{ .Values.cluster.name }}-1 -n {{ .Release.Namespace }} -c postgres -- env \
+                    AWS_ACCESS_KEY_ID="$S3_KEY" \
+                    AWS_SECRET_ACCESS_KEY="$S3_SECRET" \
+{{- if .Values.backup.s3Backup.endpointCa }}
+                    AWS_CA_BUNDLE="/controller/certificates/backup-barman-ca.crt" \
+{{- end }}
+                    barman-cloud-backup-delete \
+                    --endpoint-url {{ .Values.backup.s3Backup.endpointUrl }} \
+                    --cloud-provider aws-s3 \
+                    --retention-policy "RECOVERY WINDOW OF {{ .Values.backup.retentionPolicy | upper }}" \
+                    s3://{{ tpl .Values.backup.s3Backup.bucketName . }} {{ .Values.cluster.name }}
+
+                  echo "=== Retention cleanup complete ==="
+{{- end }}

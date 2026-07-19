@@ -1,0 +1,33 @@
+---
+# Using sub-chart helper-operator
+helper-operator:
+  operators:
+    openshift-external-secrets-operator:
+      enabled: true
+      syncwave: '0'
+      namespace:
+        name: external-secrets-operator
+        create: false
+      subscription:
+        channel: stable-v1
+        approval: Manual
+        operatorName: openshift-external-secrets-operator
+        source: redhat-operators
+        sourceNamespace: openshift-marketplace
+        csv: external-secrets-operator.v1.0.0
+      operatorgroup:
+        create: true
+        notownnamespace: true
+
+# Using sub-chart helper-status-checker
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: external-secrets-operator
+      subscriptionName: openshift-external-secrets-operator
+      installCSV: external-secrets-operator.v1.0.0
+      namespace:
+        name: external-secrets-operator
+      serviceAccount:
+        name: "sa-external-secrets-operator"

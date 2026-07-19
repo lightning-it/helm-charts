@@ -1,0 +1,23 @@
+﻿{{- if .Values.root_ca }}
+---
+apiVersion: config.openshift.io/v1
+kind: Proxy
+metadata:
+  name: cluster
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-options: ServerSideApply=true
+spec:
+  trustedCA:
+    name: root-ca-bundle
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: root-ca-bundle
+  namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+data:
+  ca-bundle.crt: {{ .Values.root_ca | toYaml | indent 2 }}
+{{- end }}

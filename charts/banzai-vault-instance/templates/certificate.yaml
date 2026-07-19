@@ -1,0 +1,28 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: vault-tls-cert
+  namespace: {{ .Release.Namespace }}
+spec:
+  commonName: vault.apps.{{ .Values.clustername }}.{{ .Values.baseDomain }}
+  dnsNames:
+    - "vault.apps.{{ .Values.clustername }}.{{ .Values.baseDomain }}"
+    - "vault"
+    - "vault.{{ .Release.Namespace }}"
+    - "vault.{{ .Release.Namespace }}.svc"
+    - "vault.{{ .Release.Namespace }}.svc.cluster.local"
+    {{- range $i := until (.Values.size | int) }}
+    - "vault-{{ $i }}"
+    - "vault-{{ $i }}.{{ $.Release.Namespace }}"
+    - "vault-{{ $i }}.{{ $.Release.Namespace }}.svc.cluster.local"
+    {{- end }}
+  ipAddresses:
+    - "127.0.0.1"
+  secretName: vault-tls
+  issuerRef:
+    name: cluster-issuer
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: ECDSA
+    size: 256

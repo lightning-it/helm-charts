@@ -1,0 +1,12 @@
+{{- if .Values.root_ca }}
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: ca-config-map
+  namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+data:
+  ca.crt: {{ .Values.root_ca | toYaml | indent 2 }}
+{{- end }}

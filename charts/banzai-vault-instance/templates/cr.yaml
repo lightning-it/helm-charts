@@ -1,0 +1,125 @@
+---
+apiVersion: "vault.banzaicloud.com/v1alpha1"
+kind: "Vault"
+metadata:
+  name: "vault"
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  labels:
+    app.kubernetes.io/name: vault
+    vault_cr: vault
+spec:
+  size: {{ .Values.size }}
+  statsdDisabled: true
+  image: "{{ .Values.image }}"
+  securityContext:
+    runAsUser: 100
+    fsGroup: 1000
+  annotations:
+    common/annotation: "true"
+    backup.velero.io/backup-volumes: "vault-raft"
+  vaultAnnotations:
+    type/instance: "vault"
+  vaultConfigurerAnnotations:
+    type/instance: "vaultconfigurer"
+  vaultLabels:
+    example.com/log-format: "json"
+  vaultConfigurerLabels:
+    example.com/log-format: "string"
+  serviceAccount: vault
+
+  # Specify the Service's type where the Vault Service is exposed
+  # Please note that some Ingress controllers like https://github.com/kubernetes/ingress-gce
+  # forces you to expose your Service on a NodePort
+  serviceType: ClusterIP
+
+  # Specify existing secret contains TLS certificate (accepted secret type: kubernetes.io/tls)
+  # If it is set, generating certificate will be disabled
+  existingTlsSecretName: vault-tls
+
+  # Optionally Watch for the cert-manager managed secret and trigger restart of Vault when the secret change
+  watchedSecretsAnnotations:
+    - cert-manager.io/certificate-name: vault-tls-cert
+
+  # Request an Ingress controller with the default configuration
+  ingress:
+    annotations:
+      route.openshift.io/termination: "passthrough"
+    spec:
+      ingressClassName: openshift-default
+      rules:
+        - host: vault.apps.{{ .Values.clustername }}.{{ .Values.baseDomain }}
+          http:
+            paths:
+            - backend:
+                service:
+                  name: vault
+                  port:
+                    number: 8200
+              pathType: ImplementationSpecific
+  volumeClaimTemplates:
+    - metadata:
+        name: vault-raft
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
+  volumeMounts:
+    - name: vault-raft
+      mountPath: /vault/file
+  veleroEnabled: false
+  caNamespaces:
+    - "{{ .Release.Namespace }}"
+  unsealConfig:
+    options:
+      preFlightChecks: true
+      storeRootToken: true
+    kubernetes:
+      secretNamespace: {{ .Release.Namespace }}
+
+  config:
+    storage:
+      raft:
+        path: "${ .Env.VAULT_STORAGE_FILE }"
+    listener:
+      tcp:
+        address: "0.0.0.0:8200"
+        # Uncommenting the following line and deleting tls_cert_file and tls_key_file disables TLS
+        # tls_disable: true
+        tls_cert_file: /vault/tls/server.crt
+        tls_key_file: /vault/tls/server.key
+    api_addr: https://vault.{{ .Release.Namespace }}:8200
+    cluster_addr: "https://${.Env.POD_NAME}:8201"
+    ui: true
+    disable_mlock: true
+
+  vaultEnvsConfig:
+    - name: SKIP_SETCAP
+      value: "true"
+    - name: SKIP_CHOWN
+      value: "true"
+    - name: VAULT_LOG_LEVEL
+      value: {{ .Values.loglevel }}
+    - name: VAULT_STORAGE_FILE
+      value: "/vault/file"
+
+  tlsAdditionalHosts:
+    - vault.apps.{{ .Values.clustername }}.{{ .Values.baseDomain }}
+
+  istioEnabled: false
+
+  resources:
+    vault:
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+
+  externalConfig:
+{{ toYaml .Values.vault_externalConfig | indent 4 }}
