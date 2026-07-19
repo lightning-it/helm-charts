@@ -1,6 +1,6 @@
 dependencies:
 - name: vault-operator
   repository: oci://ghcr.io/bank-vaults/helm-charts
-  version: 1.23.4
-digest: sha256:7ef96eafecb85a99473c36c9ad1db7cabc70062fa18c29378c5ad0e3b52e1a5a
-generated: "2026-07-17T02:59:20.867552277Z"
+  version: 1.24.0
+digest: sha256:161e81f11d7e1d6257d9647234530b359d42e4ee285487827ad1ddf36dd19a3e
+generated: "2026-07-19T22:45:31.282528371Z"
