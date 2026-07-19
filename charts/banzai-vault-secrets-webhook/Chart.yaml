@@ -1,0 +1,11 @@
+apiVersion: v2
+name: banzai-vault-secrets-webhook
+description: Master chart to deploy Banzai Vault Secrets Webhook
+version: 1.0.2
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/banzai-vault-secrets-webhook
+dependencies:
+  - name: vault-secrets-webhook
+    version: 1.22.2
+    repository: oci://ghcr.io/bank-vaults/helm-charts
+

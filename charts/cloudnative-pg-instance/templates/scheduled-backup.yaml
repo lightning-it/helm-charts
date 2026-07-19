@@ -1,0 +1,34 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: scheduledbackup-{{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  backupOwnerReference: none
+  cluster:
+    name: {{ .Values.cluster.name }}
+  method: volumeSnapshot
+  schedule: {{ .Values.backup.volumeSnapShots.schedule }}
+{{- if .Values.backup.volumeSnapShots.enabled }}
+  suspend: false
+{{- else }}
+  suspend: true
+{{- end }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: scheduledbackup-{{ .Values.cluster.name }}-s3
+  namespace: {{ .Release.Namespace }}
+spec:
+  backupOwnerReference: none
+  cluster:
+    name: {{ .Values.cluster.name }}
+  method: barmanObjectStore
+  schedule: {{ .Values.backup.s3Backup.schedule }}
+{{- if .Values.backup.s3Backup.enabled }}
+  suspend: false
+{{- else }}
+  suspend: true
+{{- end }}

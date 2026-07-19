@@ -1,0 +1,6 @@
+apiVersion: v2
+name: banzai-vault-instance
+description: Master chart to deploy Banzai Vault
+version: 1.0.4
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/banzai-vault-instance

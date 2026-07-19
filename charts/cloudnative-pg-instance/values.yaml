@@ -1,0 +1,58 @@
+---
+envName: "CHANGE_ME"
+cluster:
+  image: 'ghcr.io/cloudnative-pg/postgresql:18.1'
+  name: test-db
+  database: test_db
+  username: test
+  # password: CHANGE_ME
+  owner: test
+  storageSize: 10Gi
+  storageClass: ceph-block
+  walStorageSize: 1Gi
+  walStorageClass: ceph-block
+  enablePodMonitor: false
+  instances: 3
+  minSyncReplicas: 1
+  maxSyncReplicas: 1
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  resources: null
+  parameters:
+    synchronous_commit: 'remote_apply'
+    wal_keep_size: 2GB
+externalSecrets:
+  enabled: true
+  clusterSecretStore: hashicorp-vault
+  provider: vault
+  secretPath: null
+  rootCaSecretPath: defaults/global
+backup:
+  enabled: true
+  useBarmanCloudPlugin: false
+  barmanCloudimageName: ghcr.io/cloudnative-pg/barman-cloud:3.11.0
+  retentionPolicy: 14d
+  target: primary
+  volumeSnapShots:
+    enabled: false
+    schedule: "0 22 0 * * *"
+  s3Backup:
+    enabled: true
+    schedule: "0 22 1 * * *"
+    endpointCa: true
+    endpointUrl: "https://ocs-storagecluster-cephobjectstore-openshift-storage.apps.<YOUR CLUSTER URL>/"
+    bucketName: "{{ .Values.cluster.name }}-cnpg-backup"
+    createBucket: true
+    storageClass: ceph-bucket
+  retention:
+    enabled: false
+    schedule: "0 6 * * 0"
+    image: bitnami/kubectl:latest
+  s3Recovery:
+    enabled: true
+    pitr: null
+    endpointUrl: "{{ .Values.backup.s3Backup.endpointUrl }}"
+    bucketName: "{{ .Values.backup.s3Backup.bucketName }}"
+    credentialsSecretName: null
+    externalClusters: null
+    walMaxParallel: 4

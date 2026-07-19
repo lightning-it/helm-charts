@@ -1,0 +1,11 @@
+apiVersion: v2
+name: banzai-vault-operator
+description: Master chart to deploy Banzai Vault Operator
+version: 1.0.2
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/banzai-vault-operator
+dependencies:
+  - name: vault-operator
+    version: 1.23.4
+    repository: oci://ghcr.io/bank-vaults/helm-charts
+

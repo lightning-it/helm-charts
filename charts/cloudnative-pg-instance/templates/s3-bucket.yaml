@@ -1,0 +1,15 @@
+{{- if .Values.backup.s3Backup.createBucket }}
+---
+apiVersion: objectbucket.io/v1alpha1
+kind: ObjectBucketClaim
+metadata:
+  name: {{ tpl .Values.backup.s3Backup.bucketName . }}
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-options: SkipPrune
+    "helm.sh/resource-policy": keep
+spec:
+  bucketName: {{ tpl .Values.backup.s3Backup.bucketName . }}
+  objectBucketName: obc-{{ .Release.Namespace }}-{{ tpl .Values.backup.s3Backup.bucketName . }}
+  storageClassName: {{ .Values.backup.s3Backup.storageClass }}
+{{- end }}

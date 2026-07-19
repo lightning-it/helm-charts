@@ -1,0 +1,128 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.cluster.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  imageName: {{ .Values.cluster.image }}
+  logLevel: info
+  startDelay: 3600
+  stopDelay: 1800
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
+  smartShutdownTimeout: 180
+{{- if .Values.cluster.resources }}
+  resources:
+{{ toYaml .Values.cluster.resources | indent 4 }}
+{{- end }}
+{{- if and .Values.backup.enabled (not .Values.backup.s3Recovery.enabled) }}
+  backup:
+    retentionPolicy: "{{ .Values.backup.retentionPolicy }}"
+    target: "{{ .Values.backup.target }}"
+{{- if .Values.backup.volumeSnapShots.enabled }}
+    volumeSnapshot:
+      className: ocs-storagecluster-rbdplugin-snapclass
+      online: true
+      onlineConfiguration:
+        immediateCheckpoint: false
+        waitForArchive: true
+      snapshotOwnerReference: none
+{{- end }}
+{{- if .Values.backup.s3Backup.enabled }}
+    barmanObjectStore:
+      destinationPath: 's3://{{ tpl .Values.backup.s3Backup.bucketName . }}'
+{{- if .Values.backup.useBarmanCloudPlugin }}
+      barmanCloud:
+        imageName: {{ .Values.backup.barmanCloudimageName }}
+{{- end }}
+{{- if .Values.backup.s3Backup.endpointCa }}
+      endpointCA:
+        key: ca.crt
+        name: {{ .Values.cluster.name }}-s3-backup
+{{- end }}
+      endpointURL: '{{ .Values.backup.s3Backup.endpointUrl }}'
+      s3Credentials:
+        accessKeyId:
+          key: AWS_ACCESS_KEY_ID
+          name: {{ tpl .Values.backup.s3Backup.bucketName . }}
+        secretAccessKey:
+          key: AWS_SECRET_ACCESS_KEY
+          name: {{ tpl .Values.backup.s3Backup.bucketName . }}
+      wal:
+        compression: bzip2
+{{- end }}
+{{- end }}
+{{- if .Values.cluster.parameters }}
+  postgresql:
+    parameters:
+{{ toYaml .Values.cluster.parameters | indent 6 }}
+{{- end }}
+  enableSuperuserAccess: false
+  monitoring:
+    disableDefaultQueries: false
+    enablePodMonitor: {{ .Values.cluster.enablePodMonitor }}
+  minSyncReplicas: {{ .Values.cluster.minSyncReplicas }}
+  maxSyncReplicas: {{ .Values.cluster.maxSyncReplicas }}
+  postgresGID: 26
+  replicationSlots:
+    highAvailability:
+      enabled: true
+      slotPrefix: _cnpg_
+    updateInterval: 30
+  primaryUpdateMethod: {{ .Values.cluster.primaryUpdateMethod }}
+  enablePDB: true
+  affinity:
+    podAntiAffinityType: preferred
+  failoverDelay: 0
+  postgresUID: 26
+  walStorage:
+    resizeInUseVolumes: true
+    size: {{ .Values.cluster.walStorageSize }}
+    storageClass: {{ .Values.cluster.walStorageClass }}
+  switchoverDelay: 3600
+  storage:
+    resizeInUseVolumes: true
+    size: {{ .Values.cluster.storageSize }}
+    storageClass: {{ .Values.cluster.storageClass }}
+  primaryUpdateStrategy: {{ .Values.cluster.primaryUpdateStrategy }}
+  instances: {{ .Values.cluster.instances }}
+  bootstrap:
+{{- if .Values.backup.s3Recovery.enabled }}
+    recovery:
+      database: {{ .Values.cluster.database }}
+      owner: {{ .Values.cluster.owner }}
+      secret:
+        name: {{ .Values.cluster.name }}-user
+      source: {{ .Values.backup.s3Recovery.externalClusters | default .Values.cluster.name }}
+{{- if .Values.backup.s3Recovery.pitr }}
+      recoveryTarget:
+        targetTime: "{{ .Values.backup.s3Recovery.pitr }}"
+{{- end }}
+  externalClusters:
+    - name: {{ .Values.backup.s3Recovery.externalClusters | default .Values.cluster.name }}
+      barmanObjectStore:
+        destinationPath: 's3://{{ tpl .Values.backup.s3Recovery.bucketName . }}'
+        endpointURL: '{{ tpl .Values.backup.s3Recovery.endpointUrl . }}'
+{{- if .Values.backup.s3Recovery.endpointCa }}
+        endpointCA:
+          key: ca.crt
+          name: {{ .Values.cluster.name }}-s3-recovery
+{{- end }}
+        s3Credentials:
+          accessKeyId:
+            key: AWS_ACCESS_KEY_ID
+            name: {{ .Values.backup.s3Recovery.credentialsSecretName | default (tpl .Values.backup.s3Backup.bucketName .) }}
+          secretAccessKey:
+            key: AWS_SECRET_ACCESS_KEY
+            name: {{ .Values.backup.s3Recovery.credentialsSecretName | default (tpl .Values.backup.s3Backup.bucketName .) }}
+        wal:
+          maxParallel: {{ .Values.backup.s3Recovery.walMaxParallel }}
+{{- else if (not .Values.backup.s3Recovery.enabled) }}
+    initdb:
+      database: {{ .Values.cluster.database }}
+      owner: {{ .Values.cluster.owner }}
+      secret:
+        name: {{ .Values.cluster.name }}-user
+{{- end }}

@@ -1,0 +1,36 @@
+{{- if .Values.autosizing.master }}
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: masters-auto-sizing-reserved
+spec:
+  autoSizingReserved: true
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/master: ""
+{{- end }}
+{{- if .Values.autosizing.worker }}
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: worker-auto-sizing-reserved
+spec:
+  autoSizingReserved: true
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/worker: ""
+{{- end }}
+{{- if .Values.autosizing.infra }}
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: KubeletConfig
+metadata:
+  name: infra-auto-sizing-reserved
+spec:
+  autoSizingReserved: true
+  machineConfigPoolSelector:
+    matchLabels:
+      pools.operator.machineconfiguration.openshift.io/infra: ""
+{{- end }}
