@@ -21,11 +21,11 @@ Publishing targets: `none`.
 
 ## Supported and Tested Platforms
 
-| Platform / Product | Status | Validation |
-|---|---:|---|
-| ubuntu-latest | Supported | Helm lint/template |
-| helm | Tested where applicable | Helm lint/template |
-| kubernetes | Tested where applicable | Helm lint/template |
+| Platform / Product |                  Status | Validation         |
+| ------------------ | ----------------------: | ------------------ |
+| ubuntu-latest      |               Supported | Helm lint/template |
+| helm               | Tested where applicable | Helm lint/template |
+| kubernetes         | Tested where applicable | Helm lint/template |
 
 <!-- END LIT_SHARED_RELEASE_MODEL -->
 
