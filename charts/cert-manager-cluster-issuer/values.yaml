@@ -1,67 +1,65 @@
 ---
+# ============================================================
+# Vault AppRole Authentication (used by vault-Issuer)
+# ============================================================
 vaultAppRoleSecret:
   name: cert-manager-vault-approle
-  namespace: cert-manager
+  namespace: cert-manager-operator
   syncwave: '0'
-  #The App Role secret used to authenticate with Vault
-  secret: pleaseoverwrite
+  secret: pleaseoverwrite  # only used if css_enabled: false
 
+# ============================================================
+# ClusterSecretStore (External Secrets Operator)
+# ============================================================
+css:
+  enabled: false
+  name: hashicorp-vault
+  # Pfad für Vault AppRole Secret
+  vaultSecretPath: yourcluster/cert-manager
+  # Pfad für Cloudflare Token
+  cloudflareSecretPath: yourcluster/cloudflare
+  cloudflareSecretProperty: api-token
+
+# ============================================================
+# Issuer configuration
+# ============================================================
 issuer:
-  name: cluster-issuer
-  syncwave: '1'
-  hashicorpVault:
-    # Path is the mount path of the Vault PKI backend's `sign` endpoint
-    path: pki-inter-ec-2026/sign/pleaseoverwrite
-    # Server is the connection address for the Vault server
-    server: https://vault.apps.pleaseoverwrite.com
-    appRole:
-      # Path where the App Role authentication backend is mounted in Vault
-      path: approle
-      # RoleID configured in the App Role authentication backend when setting up the authentication backend in Vault
-      id: pleaseoverwrite
-    # Reference to a Secret containing a bundle of PEM-encoded CAs to use when verifying the certificate chain presented by Vault when using HTTPS
-    caBundleSecretRef:
-      syncwave: '1'
-      name: "cert-manager-vault-ssl-cert"
-      value: "pleaseoverwrite"
-      # value: |
-      #   LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUZxVENDQkpHZ0F3SUJBZ0lRSFk5dG1wb0FU
-      #   Z0Jtc3J1K1UzY3pnakFOQmdrcWhraUc5dzBCQVFzRkFEQkEKTVJVd0V3WURWUVFLRXd4Q1lXNTZZ
-      #   V2tnUTJ4dmRXUXhKekFsQmdOVkJBTVRIa0poYm5waGFTQkRiRzkxWkNCSApaVzVsY21GMFpXUWdV
-      #   bTl2ZENCRFFUQWVGdzB5TkRBME1qUXdPVEkxTUROYUZ3MHlOVEEwTWpRd09USTFNRE5hCk1FUXhG
-      #   VEFUQmdOVkJBb1RERUpoYm5waGFTQkRiRzkxWkRFck1Da0dBMVVFQXhNaVFtRnVlbUZwSUVOc2Iz
-      #   VmsKSUVkbGJtVnlZWFJsWkNCVFpYSjJaWElnUTJWeWREQ0NBU0l3RFFZSktvWklodmNOQVFFQkJR
-      #   QURnZ0VQQURDQwpBUW9DZ2dFQkFNSFdYZUJkaGhnbVRtRzJFQWhOcE9zd3pxU001TUpMS2VJdnZO
-      #   SThlblBxSDh5UlY3YnhEVXpiCnJhdDFuZWp5dWlTejJWVmdXb1RQbjFFVHBhWVdCR3B2WW1mWTJa
-      #   UHk3S1hDWHhTUnNKdmpBajlHNlNHalFBaWMKbC82blEzalNVOFFLVkxKT3VNZHhmc3pUMWNJendm
-      #   dEdEQndGSithdDllQzI0a3d5bHh5aVhqZWtIR0RtRW1HbApGWWhadlJveUJNTEJIUjF2elJMdVFw
-      #   eW1JMGg2R0R6YmpFd3VDL0VZS1hLRTM1Yll2MjZQdGduYUlvUEhjdDYxClM3b0QwN3dlV3MxZGhl
-      #   MFNVTytvUGpOaSsyWGMwenhmRE41c2tLRFRvWFhEK1JYZi9MdWFwQ29WTVFtMHMvbXoKRUFnVko4
-      #   L1lrd0ZGYVM5ZSsvUFB1cWlRaDZhMTI4VUNBd0VBQWFPQ0Fwa3dnZ0tWTUE0R0ExVWREd0VCL3dR
-      #   RQpBd0lGb0RBVEJnTlZIU1VFRERBS0JnZ3JCZ0VGQlFjREFUQU1CZ05WSFJNQkFmOEVBakFBTUlJ
-      #   Q1hnWURWUjBSCkJJSUNWVENDQWxHQ0JYWmhkV3gwZ2gxMllYVnNkQzVpWldOb2RHeGxMV2hoYzJo
-      #   cFkyOXljQzEyWVhWc2RJSXYKZG1GMWJIUXVZbVZqYUhSc1pTMW9ZWE5vYVdOdmNuQXRkbUYxYkhR
-      #   dWMzWmpMbU5zZFhOMFpYSXViRzlqWVd5QwpJWFpoZFd4MExtRndjSE11YW1Rd01TNTBaWE4wTG1O
-      #   dmNuQXViQzFwZEM1cGI0SUhkbUYxYkhRdE1JSWZkbUYxCmJIUXRNQzVpWldOb2RHeGxMV2hoYzJo
-      #   cFkyOXljQzEyWVhWc2RJSXhkbUYxYkhRdE1DNWlaV05vZEd4bExXaGgKYzJocFkyOXljQzEyWVhW
-      #   c2RDNXpkbU11WTJ4MWMzUmxjaTVzYjJOaGJJSUhkbUYxYkhRdE1ZSWZkbUYxYkhRdApNUzVpWldO
-      #   b2RHeGxMV2hoYzJocFkyOXljQzEyWVhWc2RJSXhkbUYxYkhRdE1TNWlaV05vZEd4bExXaGhjMmhw
-      #   ClkyOXljQzEyWVhWc2RDNXpkbU11WTJ4MWMzUmxjaTVzYjJOaGJJSUhkbUYxYkhRdE1vSWZkbUYx
-      #   YkhRdE1pNWkKWldOb2RHeGxMV2hoYzJocFkyOXljQzEyWVhWc2RJSXhkbUYxYkhRdE1pNWlaV05v
-      #   ZEd4bExXaGhjMmhwWTI5eQpjQzEyWVhWc2RDNXpkbU11WTJ4MWMzUmxjaTVzYjJOaGJJSUhkbUYx
-      #   YkhRdE00SWZkbUYxYkhRdE15NWlaV05vCmRHeGxMV2hoYzJocFkyOXljQzEyWVhWc2RJSXhkbUYx
-      #   YkhRdE15NWlaV05vZEd4bExXaGhjMmhwWTI5eWNDMTIKWVhWc2RDNXpkbU11WTJ4MWMzUmxjaTVz
-      #   YjJOaGJJSUhkbUYxYkhRdE5JSWZkbUYxYkhRdE5DNWlaV05vZEd4bApMV2hoYzJocFkyOXljQzEy
-      #   WVhWc2RJSXhkbUYxYkhRdE5DNWlaV05vZEd4bExXaGhjMmhwWTI5eWNDMTJZWFZzCmRDNXpkbU11
-      #   WTJ4MWMzUmxjaTVzYjJOaGJJY0Vmd0FBQVRBTkJna3Foa2lHOXcwQkFRc0ZBQU9DQVFFQWp1R1IK
-      #   di85Wmh4RTlLUFV5YUVnUjVkQ3ZvSkZia0RaZnR6MjhsbnNwUXRCY2hlNVJDa0o0aUJvOUI0NHBq
-      #   TGdEWFFSSwoyNzVIb3hCM0xHazJtU082ejhmdVRGOGRoRFRvczVaZWhyYlVVNisydDdFMWV0Vmpu
-      #   OVVMUlQzY1B4YlNycHFOCkw5ZndaV2g1Z1lheWxjQ3paVXdkRFE2aENtNnRVVzBva29tbm5hdmJW
-      #   MmhZTHFnaWl0dmJVMTd3VTJRMEc0SXIKUHdxV1NnYUlYeTNFTzV4dkwwUkNvWjdjSWRia1J5MVJy
-      #   TkNzYmxsTm5ZSE03MDlwenpSczVJR29Qb0RVYzNUcgpGV1dMK1ltZm9LekpBTnFhOEJlLzJzaUM3
-      #   OC9CdEh6Z3c3dW1sZWdZMTlCYzREdkJwUHJlMFpqSTk2NUViNkc2ClIvVk5xYWNrUjJNbjlYeVNn
-      #   QT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+  vault:
+    enabled: true
+    name: cluster-issuer
+    syncwave: '1'
+    hashicorpVault:
+      path: pki-inter-ec-2026/sign/pleaseoverwrite
+      server: https://vault.apps.pleaseoverwrite.com
+      namespace: ""
+      appRole:
+        path: approle
+        id: pleaseoverwrite
+      caBundleSecretRef:
+        syncwave: '1'
+        name: cert-manager-vault-ssl-cert
+        value: pleaseoverwrite
 
-css_enabled: false
-css_name: hashicorp-vault
-css_secret_path: yourcluster/cert-manager
+  letsencrypt:
+    enabled: false
+    name: letsencrypt-prod
+    syncwave: '1'
+    # staging for testing: https://acme-staging-v02.api.letsencrypt.org/directory
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: admin@example.com
+    cloudflare:
+      # used if css.enabled: false
+      token: pleaseoverwrite
+
+# ============================================================
+# Wildcard Certificate (optional)
+# ============================================================
+certificate:
+  enabled: false
+  name: apps-wildcard
+  namespace: kube-system
+  secretName: apps-wildcard-tls
+  syncwave: '2'
+  issuerName: letsencrypt-prod
+  dnsNames:
+    - "*.apps.cluster.example.com"
