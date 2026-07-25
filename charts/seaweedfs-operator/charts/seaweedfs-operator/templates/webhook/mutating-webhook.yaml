@@ -3,7 +3,6 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  creationTimestamp: null
   name: {{ include "seaweedfs-operator.mutatingWebhookName" . }}
   labels:
     {{- include "seaweedfs-operator.labels" . | nindent 4 }}

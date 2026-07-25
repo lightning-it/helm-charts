@@ -25,5 +25,6 @@ spec:
   selector:
     matchLabels:
       app: {{ include "seaweedfs-operator.fullname" . }}
+      app.kubernetes.io/component: metrics
 
 {{- end }}
