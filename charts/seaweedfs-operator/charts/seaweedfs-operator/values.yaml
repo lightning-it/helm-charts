@@ -70,9 +70,9 @@ bucketUsage:
 
 ## Configure container port
 port:
-  # -- name of the container port to use for the Kubernete service and ingress
+  # -- name of the container port to use for the Kubernetes service and ingress
   name: http
-  # -- container port number to use for the Kubernete service and ingress
+  # -- container port number to use for the Kubernetes service and ingress
   number: 8080
 
 ## Configure Service
