@@ -159,7 +159,7 @@ Webhook init container for waiting until webhook service is ready
 - name: wait-for-webhook
   image: {{ .Values.webhook.initContainer.image }}
   {{- include "seaweedfs-operator.webhookContainerSecurityContext" . | nindent 2 }}
-  command: ['sh', '-c', 'set -e; attempt=0; until curl -sk --output /dev/null --max-time 5 https://{{ include "seaweedfs-operator.fullname" . }}-webhook.{{ .Release.Namespace }}.svc:443{{ .webhookPath }}; do attempt=$((attempt + 1)); if [ "$attempt" -ge 60 ]; then echo webhook readiness timed out >&2; exit 1; fi; echo waiting for webhook; sleep 2; done;']
+  command: ['sh', '-c', 'set -e; attempt=0; until curl -fsk --output /dev/null --max-time 5 https://{{ include "seaweedfs-operator.fullname" . }}-webhook.{{ .Release.Namespace }}.svc:443{{ .webhookPath }}; do attempt=$((attempt + 1)); if [ "$attempt" -ge 60 ]; then echo webhook readiness timed out >&2; exit 1; fi; echo waiting for webhook; sleep 2; done;']
 {{- end -}}
 
 {{/*
