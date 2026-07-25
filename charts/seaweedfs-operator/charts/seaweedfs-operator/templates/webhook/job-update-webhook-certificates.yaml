@@ -120,7 +120,7 @@ metadata:
   name: {{ include "seaweedfs-operator.fullname" . }}-update-webhook-certificates
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-10"
 ---
@@ -130,7 +130,7 @@ metadata:
   name: {{ include "seaweedfs-operator.fullname" . }}-update-webhook-certificates
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-10"
 rules:
@@ -149,7 +149,7 @@ metadata:
   name: {{ include "seaweedfs-operator.fullname" . }}-update-webhook-certificates
   namespace: {{ .Release.Namespace }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-9"
 roleRef:
@@ -166,7 +166,7 @@ kind: ClusterRole
 metadata:
   name: {{ include "seaweedfs-operator.fullname" . }}-update-webhook-certificates
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-10"
 rules:
@@ -184,7 +184,7 @@ kind: ClusterRoleBinding
 metadata:
   name: {{ include "seaweedfs-operator.fullname" . }}-update-webhook-certificates
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook": pre-install,pre-upgrade,post-install,post-upgrade
     "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
     "helm.sh/hook-weight": "-9"
 roleRef:

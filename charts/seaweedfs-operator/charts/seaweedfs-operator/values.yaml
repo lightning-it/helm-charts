@@ -9,10 +9,10 @@ nameOverride: ""
 # -- String to fully override common.names.fullname template
 fullnameOverride: ""
 
-# -- Annotations for all the deployed objects
+# -- Annotations for the operator Deployment and its Pod template
 commonAnnotations: {}
 
-# -- Labels for all the deployed objects
+# -- Labels for the operator Deployment
 commonLabels: {}
 
 ## Custom Resource Definitions managed by this chart
