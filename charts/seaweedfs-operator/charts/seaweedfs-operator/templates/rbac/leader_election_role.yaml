@@ -40,4 +40,7 @@ rules:
   - create
   - get
   - list
+  - watch
   - update
+  - patch
+  - delete

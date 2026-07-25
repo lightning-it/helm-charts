@@ -1,3 +1,6 @@
+{{- if not (hasKey .Values "vanillaK8s") }}
+{{- fail "vanillaK8s must be set; use values-kubernetes.yaml or values-ocp.yaml" }}
+{{- end }}
 {{- if .Values.vanillaK8s }}
 ---
 apiVersion: operator.external-secrets.io/v1alpha1
