@@ -2,7 +2,7 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: seaweed-viewer-role
+  name: {{ include "seaweedfs-operator.fullname" . }}-viewer
 rules:
 - apiGroups:
   - seaweed.seaweedfs.com

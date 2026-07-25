@@ -64,7 +64,7 @@ spec:
           containerPort: {{ .Values.port.number }}
           protocol: TCP
         - name: https
-          containerPort: 443
+          containerPort: 9443
           protocol: TCP
         {{- if .Values.resources }}
         resources: {{- toYaml .Values.resources | nindent 12 }}
