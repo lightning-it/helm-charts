@@ -6,7 +6,7 @@ vaultAppRoleSecret:
   name: cert-manager-vault-approle
   namespace: cert-manager-operator
   syncwave: '0'
-  secret: pleaseoverwrite  # only used if css_enabled: false
+  secret: pleaseoverwrite  # only used if css.enabled is false
 
 # ============================================================
 # ClusterSecretStore (External Secrets Operator)
