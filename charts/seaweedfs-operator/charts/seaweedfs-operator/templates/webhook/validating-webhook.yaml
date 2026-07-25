@@ -13,7 +13,7 @@ webhooks:
       namespace: {{ .Release.Namespace }}
       port: 443
       path: {{ include "seaweedfs-operator.validatingWebhookPath" . }}
-  name: vseaweed.kb.io
+  name: {{ include "seaweedfs-operator.fullname" . }}.vseaweed.kb.io
   failurePolicy: Fail
   sideEffects: None
   admissionReviewVersions:
