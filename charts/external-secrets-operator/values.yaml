@@ -1,3 +1,3 @@
 ---
-# OpenShift-compatible default. values-kubernetes.yaml enables OperatorConfig.
+# Platform selector only; install with values-ocp.yaml or values-kubernetes.yaml.
 vanillaK8s: false
