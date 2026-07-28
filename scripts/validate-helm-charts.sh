@@ -9,7 +9,7 @@ for chart in charts/*; do
   found=1
   echo "Validating $chart"
   helm lint "$chart"
-  helm template adr-validation "$chart" >/dev/null
+  helm template lit-quality "$chart" >/dev/null
 done
 
 if [ "$found" -ne 1 ]; then
