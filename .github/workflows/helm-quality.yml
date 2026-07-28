@@ -1,0 +1,28 @@
+# yamllint disable rule:truthy
+---
+name: Helm Quality
+
+on:
+  push:
+    branches: ["develop", "main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: helm / quality
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Install Helm
+        uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
+        with:
+          version: v3.18.4
+      - name: Lint and render every product chart
+        run: bash scripts/validate-helm-charts.sh
