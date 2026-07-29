@@ -1,0 +1,98 @@
+{{- if .Values.ldapGroupSync.enabled }}
+{{/* Admin Groups */}}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.adminGroups }}
+{{- $namespace := $mapping.namespace | default "" }}
+{{- $namespaceSelector := $mapping.namespaceSelector | default dict }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ if $namespace }}RoleBinding{{ else }}ClusterRoleBinding{{ end }}
+metadata:
+  name: {{ include "generic-clusterconfig.ldapGroupSync.crbName" (dict "group" $mapping.group "role" "admin" "namespace" $namespace) }}
+  {{- if $namespace }}
+  namespace: {{ $namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: ldap-group-sync
+    rbac.openshift.io/group: {{ $mapping.group | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $mapping.group }}
+{{- end }}
+
+{{/* Edit Groups */}}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.editGroups }}
+{{- $namespace := $mapping.namespace | default "" }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ if $namespace }}RoleBinding{{ else }}ClusterRoleBinding{{ end }}
+metadata:
+  name: {{ include "generic-clusterconfig.ldapGroupSync.crbName" (dict "group" $mapping.group "role" "edit" "namespace" $namespace) }}
+  {{- if $namespace }}
+  namespace: {{ $namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: ldap-group-sync
+    rbac.openshift.io/group: {{ $mapping.group | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $mapping.group }}
+{{- end }}
+
+{{/* View Groups */}}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.viewGroups }}
+{{- $namespace := $mapping.namespace | default "" }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ if $namespace }}RoleBinding{{ else }}ClusterRoleBinding{{ end }}
+metadata:
+  name: {{ include "generic-clusterconfig.ldapGroupSync.crbName" (dict "group" $mapping.group "role" "view" "namespace" $namespace) }}
+  {{- if $namespace }}
+  namespace: {{ $namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: ldap-group-sync
+    rbac.openshift.io/group: {{ $mapping.group | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: view
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $mapping.group }}
+{{- end }}
+
+{{/* Custom Role Groups */}}
+{{- range $mapping := .Values.ldapGroupSync.rbac.groupRoleMappings.customRoleGroups }}
+{{- $namespace := $mapping.namespace | default "" }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: {{ if $namespace }}RoleBinding{{ else }}ClusterRoleBinding{{ end }}
+metadata:
+  name: {{ include "generic-clusterconfig.ldapGroupSync.crbName" (dict "group" $mapping.group "role" $mapping.clusterRole "namespace" $namespace) }}
+  {{- if $namespace }}
+  namespace: {{ $namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/component: ldap-group-sync
+    rbac.openshift.io/group: {{ $mapping.group | quote }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ $mapping.clusterRole }}
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  name: {{ $mapping.group }}
+{{- end }}
+{{- end }}

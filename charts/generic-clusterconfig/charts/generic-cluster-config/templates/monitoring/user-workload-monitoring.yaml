@@ -1,0 +1,138 @@
+{{ if .Values.user_workload_monitoring }}
+{{ if eq ( .Values.user_workload_monitoring.enabled | toString) "true" }}
+{{- with .Values.user_workload_monitoring }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: user-workload-monitoring-config
+  namespace: openshift-user-workload-monitoring
+  labels:
+    {{- include "tpl.labels" $ | nindent 4 }}
+data:
+  config.yaml: |
+    {{- /* ALERTMANAGER CONFIGURATION */}}
+    {{- with .alertmanager }}  
+    alertmanager:
+      {{- if .disable_local_alertmanager }}
+      {{- if or ( eq (.disable_local_alertmanager | toString) "true") (eq (.disable_local_alertmanager | toString) "false") }}
+      enabled: {{.disable_local_alertmanager }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .enableAlertmanagerConfig }}
+      {{- if or ( eq (.enableAlertmanagerConfig | toString) "true") (eq (.enableAlertmanagerConfig | toString) "false") }}
+      enableAlertmanagerConfig: {{.enableAlertmanagerConfig }}
+      {{- end }}
+      {{- end }}
+
+      {{- if .secrets }}
+      secrets:
+        {{- range .secrets }}
+        - {{.}}
+        {{- end }}
+      {{- end }}
+
+      {{- if .nodeSelector }}
+      nodeSelector:
+        {{- toYaml .nodeSelector | nindent 8 }}
+      {{- end }}
+
+      {{- if .tolerations }}
+{{ include "tpl.tolerations.uwm_override" .tolerations | indent 6 }}
+      {{- end }}
+
+      {{- if .storage }}
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: {{ .storage.size | default "40Gi" }}
+          storageClassName: {{ .storage.class | default "gp2-csi" }}
+      {{- end }}
+
+      {{- if .resources }}
+{{ include "tpl.resources" .resources | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- /* PROMETHEUS CONFIGURATION */}}
+    {{- with .prometheus }}
+    prometheus:
+      {{- if .nodeSelector }}
+      nodeSelector:
+        {{- toYaml .nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .remoteWriteConfig }}
+      remoteWrite:
+        {{- toYaml .remoteWriteConfig | nindent 6 }}
+      {{- end }}
+      retention: {{ .retention | default "24h" }}
+      {{- if eq (.retentionSize | toString) "0"}}
+      {{- else }}
+      retentionSize: {{ .retentionSize }}
+      {{- end }}
+      {{- if .tolerations }}
+{{ include "tpl.tolerations.uwm_override" .tolerations | indent 6 }}
+      {{- end }}
+
+      {{- if .storage }}
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: {{ .storage.size | default "100Gi" }}
+          storageClassName: {{ .storage.class | default "gp2-csi" }}
+      {{- end }}
+
+      {{- if .resources }}
+{{ include "tpl.resources" .resources | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- /* PROMETHEUS OPERATOR */}}
+    {{- with .prometheusOperator }}
+    prometheusOperator:
+      {{- if .nodeSelector }}
+      nodeSelector:
+        {{- toYaml .nodeSelector | nindent 8 }}
+      {{- end }}
+
+      {{- if .tolerations }}
+{{ include "tpl.tolerations.uwm_override" .tolerations | indent 6 }}
+      {{- end }}
+
+      {{- if .resources }}
+{{ include "tpl.resources" .resources | indent 6 }}
+      {{- end }}
+    {{- end }}
+
+    {{- /* THANOS RULER */}}
+    {{- with .thanosRuler }}
+    thanosRuler:
+      {{- if .nodeSelector }}
+      nodeSelector:
+        {{- toYaml .nodeSelector | nindent 8 }}
+      {{- end }}
+      retention: {{ .retention | default "24h" }}
+
+      {{- if .tolerations }}
+{{ include "tpl.tolerations.uwm_override" .tolerations | indent 6 }}
+      {{- end }}
+
+      {{- if .storage }}
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: {{ .storage.size | default "100Gi" }}
+          storageClassName: {{ .storage.class | default "gp2-csi" }}
+      {{- end }}
+
+      {{- if .resources }}
+{{ include "tpl.resources" .resources | indent 6 }}
+      {{- end }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

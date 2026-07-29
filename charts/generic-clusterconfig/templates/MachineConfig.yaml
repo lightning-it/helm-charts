@@ -1,0 +1,19 @@
+{{- if .Values.machineConfig }}
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: 99-gpu-load-video-module
+  labels:
+    machineconfiguration.openshift.io/role: gpu
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+        - path: /etc/modules-load.d/video.conf
+          mode: 0644
+          contents:
+            source: data:,video
+{{- end }}

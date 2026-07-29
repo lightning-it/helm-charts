@@ -1,0 +1,47 @@
+{{- include "openshift-ingressoperatorpatch.validateCertificateSource" . -}}
+{{- if eq .Values.certificateSource "cert-manager" }}
+{{- if .Values.ingress.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.ingress.certificateSecret }}
+  namespace: openshift-ingress
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-options: ServerSideApply=false
+spec:
+  secretName: {{ .Values.ingress.certificateSecret }}
+  commonName: {{ index .Values.ingress.dnsNames 0 }}
+  dnsNames: {{ .Values.ingress.dnsNames | toYaml | nindent 4 }}
+  issuerRef:
+    name: {{ .Values.certManager.issuerRef }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+{{- end }}
+{{- if .Values.api.enabled }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.api.certificateSecret }}
+  namespace: openshift-config
+  annotations:
+    argocd.argoproj.io/sync-wave: "-5"
+    argocd.argoproj.io/sync-options: ServerSideApply=false
+spec:
+  secretName: {{ .Values.api.certificateSecret }}
+  commonName: {{ index .Values.api.dnsNames 0 }}
+  dnsNames: {{ .Values.api.dnsNames | toYaml | nindent 4 }}
+  issuerRef:
+    name: {{ .Values.certManager.issuerRef }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+{{- end }}
+{{- end }}

@@ -1,0 +1,120 @@
+###########################
+# Enable and configura ODF
+###########################
+storagecluster:
+  enabled: true
+
+  full_deployment:
+
+    enabled: true
+    nfs: disabled 
+    default_node_label: cluster.ocs.openshift.io/openshift-storage
+
+  # Cluster wide encryption 
+    encryption:
+      enable: true
+    
+    storageDeviceSets:
+      - name: ocs-deviceset-lso-volumeset
+        dataPVCTemplate:
+          spec:
+            resources:
+              requests:
+                storage: "1"
+            storageClassName: lso-volumeset
+            volumeMode: Block
+        replica: 3
+        
+        # -- Count is the number of devices in each StorageClassDeviceSet
+        # @default -- 1
+        count: 3 
+
+    # Resource settings for the different components.
+    # ONLY set this if you know what you are doing.
+    # For every component Limits and Requests can be set.
+
+    # For testing request settings might be reduced.
+    # compontent_resources:
+      # MDS Defaults
+      #   Limits: cpu 3, memory: 8Gi
+      #   Requests: cpu: 1, memory: 8Gi
+      # mds:
+      #   requests:
+      #     cpu: '1'
+      #     memory: 8Gi
+
+      # RGW Defaults
+      #   Limits: cpu 2, memory: 4Gi
+      #   Requests: cpu: 1, memory: 4Gi
+      # rgw: ...
+      # rgw:
+      #   requests:
+      #     cpu: '1'
+      #     memory: 4Gi
+
+      # MON Defaults
+      #   Limits: cpu 2, memory: 4Gi
+      #   Requests: cpu: 1, memory: 4Gi
+      # mon: ...
+
+      # MGR Defaults
+      #   Limits: cpu 2, memory: 4Gi
+      #   Requests: cpu: 1, memory: 4Gi
+      # mgr: ...
+
+      # NOOBAA-CORE Defaults
+      #   Limits: cpu 2, memory: 4Gi
+      #   Requests: cpu: 1, memory: 4Gi
+      # moobaa-core: ...
+
+      # NOOBAA-DB Defaults
+      #   Limits: cpu 2, memory: 4Gi
+      #   Requests: cpu: 1, memory: 4Gi
+      # moobaa-DB: ...
+
+    placement:
+      all:
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            value: "true"
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/infra
+            value: reserved
+          - effect: NoExecute
+            key: node-role.kubernetes.io/infra
+            value: reserved
+      mds:
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            value: "true"
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/infra
+            value: reserved
+          - effect: NoExecute
+            key: node-role.kubernetes.io/infra
+            value: reserved
+      noobaCore:
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            value: "true"
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/infra
+            value: reserved
+          - effect: NoExecute
+            key: node-role.kubernetes.io/infra
+            value: reserved
+      rgw:
+        tolerations:
+          - effect: NoSchedule
+            key: node.ocs.openshift.io/storage
+            value: "true"
+          - effect: NoSchedule
+            key: node-role.kubernetes.io/infra
+            value: reserved
+          - effect: NoExecute
+            key: node-role.kubernetes.io/infra
+            value: reserved
+

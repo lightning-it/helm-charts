@@ -1,0 +1,44 @@
+{{- if .Values.mcp.infra }}
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: infra
+  labels:
+    pools.operator.machineconfiguration.openshift.io/infra: ''
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Validate=false
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/hook: PreSync
+spec:
+  machineConfigSelector:
+    matchExpressions:
+      - key: machineconfiguration.openshift.io/role
+        operator: In
+        values:
+          - worker
+          - infra
+  nodeSelector:
+    matchLabels:
+      node-role.kubernetes.io/infra: ""
+---
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfigPool
+metadata:
+  name: gpu
+  annotations:
+    argocd.argoproj.io/sync-options: Prune=false,Validate=false
+    argocd.argoproj.io/compare-options: IgnoreExtraneous
+    argocd.argoproj.io/hook: PreSync
+spec:
+  machineConfigSelector:
+    matchExpressions:
+      - key: machineconfiguration.openshift.io/role
+        operator: In
+        values:
+          - worker
+          - gpu
+  nodeSelector:
+    matchLabels:
+      feature.node.kubernetes.io/pci-10de.present: 'true'
+{{- end }}

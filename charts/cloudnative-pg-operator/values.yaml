@@ -1,0 +1,40 @@
+---
+# Using sub-chart helper-operator
+helper-operator:
+  operators:
+    cloudnative-pg:
+      enabled: true
+      syncwave: '0'
+      namespace:
+        name: openshift-operators
+        create: false
+      subscription:
+        channel: stable-v1
+        approval: Manual
+        operatorName: cloudnative-pg
+        source: certified-operators
+        sourceNamespace: openshift-marketplace
+        csv: cloudnative-pg.v1.28.1
+        config:
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+      operatorgroup:
+        create: false
+        notownnamespace: false
+
+# Using sub-chart helper-status-checker
+helper-status-checker:
+  enabled: true
+  approver: true
+  checks:
+    - operatorName: cloudnative-pg
+      installCSV: cloudnative-pg.v1.28.1
+      namespace:
+        name: openshift-operators
+      serviceAccount:
+        name: "sa-cloudnative-pg-operator"

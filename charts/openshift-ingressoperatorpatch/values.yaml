@@ -1,0 +1,48 @@
+---
+allowWildcards: true
+
+ingress:
+  enabled: false
+  certificateSecret: cert-default-ingress
+  dnsNames: []
+
+api:
+  enabled: false
+  certificateSecret: cert-api
+  dnsNames: []
+
+root_ca: null
+
+# Quelle der Zertifikate: cert-manager | external-secrets
+certificateSource: cert-manager
+
+# Einstellungen für cert-manager (certificateSource: cert-manager)
+certManager:
+  issuerRef: cluster-issuer
+
+# Einstellungen für External Secrets (certificateSource: external-secrets)
+externalSecrets:
+  secretStoreRef:
+    name: "hashicorp-vault"
+    kind: ClusterSecretStore
+  refreshInterval: 1h
+  ingress:
+    data:
+      - secretKey: tls.crt
+        remoteRef:
+          key: <CLUSTER>/openshift-ingressoperatorpatch
+          property: ingress_crt
+      - secretKey: tls.key
+        remoteRef:
+          key: <CLUSTER>/openshift-ingressoperatorpatch
+          property: ingress_key
+  api:
+    data:
+      - secretKey: tls.crt
+        remoteRef:
+          key: <CLUSTER>/openshift-ingressoperatorpatch
+          property: api_crt
+      - secretKey: tls.key
+        remoteRef:
+          key: <CLUSTER>/openshift-ingressoperatorpatch
+          property: api_key

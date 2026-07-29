@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cloudnative-pg-instance
+description: Master chart to deploy and configure CloudNativePG
+version: 1.0.7
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/cloudnative-pg-instance

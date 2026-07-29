@@ -1,0 +1,68 @@
+{{- if .Values.ldapGroupSync.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ldap-group-sync
+  namespace: {{ include "generic-clusterconfig.ldapGroupSync.namespace" . }}
+  labels:
+    {{- include "generic-clusterconfig.labels" . | nindent 4 }}
+    app.kubernetes.io/component: ldap-group-sync
+  {{- with .Values.global.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  schedule: {{ .Values.ldapGroupSync.cronjob.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.ldapGroupSync.cronjob.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.ldapGroupSync.cronjob.failedJobsHistoryLimit }}
+  jobTemplate:
+    metadata:
+      labels:
+        {{- include "generic-clusterconfig.labels" . | nindent 8 }}
+    spec:
+      template:
+        metadata:
+          labels:
+            {{- include "generic-clusterconfig.labels" . | nindent 12 }}
+        spec:
+          serviceAccountName: {{ .Values.ldapGroupSync.rbac.serviceAccountName }}
+          restartPolicy: OnFailure
+          containers:
+          - name: ldap-sync
+            image: {{ printf "%s:%s" .Values.ldapGroupSync.cronjob.image.repository .Values.ldapGroupSync.cronjob.image.tag }}
+            imagePullPolicy: {{ .Values.ldapGroupSync.cronjob.image.pullPolicy }}
+            command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
+              echo "Starting LDAP group sync at $(date)"
+              oc adm groups sync \
+                --sync-config=/etc/config/sync-config.yaml \
+                --confirm
+              echo "LDAP group sync completed at $(date)"
+            {{- with .Values.ldapGroupSync.cronjob.resources }}
+            resources:
+              {{- toYaml . | nindent 14 }}
+            {{- end }}
+            volumeMounts:
+            - name: sync-config
+              mountPath: /etc/config
+              readOnly: true
+            - name: ldap-password
+              mountPath: /etc/secrets
+              readOnly: true
+            - name: ipa-ca
+              mountPath: /etc/ipa-ca
+              readOnly: true
+          volumes:
+          - name: sync-config
+            configMap:
+              name: ldap-sync-config
+          - name: ldap-password
+            secret:
+              secretName: {{ .Values.ldapGroupSync.secrets.bindPassword.secretName }}
+          - name: ipa-ca
+            configMap:
+              name: {{ .Values.ldapGroupSync.secrets.caCert.configMapName }}
+{{- end }}

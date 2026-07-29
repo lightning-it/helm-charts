@@ -1,0 +1,18 @@
+---
+securityContext:
+  runAsUser: null
+  runAsGroup: null
+  fsGroup: null
+
+rbac:
+  create: true
+  pspEnabled: false
+
+# ServiceAccount konfigurieren
+serviceAccount:
+  create: true
+  name: vault-operator
+
+# Node Selector
+nodeSelector:
+  node-role.kubernetes.io/worker: ""

@@ -1,0 +1,23 @@
+apiVersion: v2
+name: generic-clusterconfig
+description: Installs cluster configuration which is usually valid for ALL clusters
+home: https://github.com/lightning-it/helm-charts/tree/main/charts/generic-clusterconfig
+version: 1.0.19
+dependencies:
+  - name: tpl
+    version: ~1.0.0
+    repository: https://charts.stderr.at/
+  - name: generic-cluster-config
+    version: ~1.0.25
+    repository: https://charts.stderr.at/
+maintainers:
+  - name: Dirk Egert
+    email: d.egert@degert-it.de
+    url: https://www.degert-it.de
+sources:
+  - https://github.com/tjungbauer/helm-charts
+  - https://charts.stderr.at/
+keywords:
+  - generic
+  - clusterconfig
+  - gitops

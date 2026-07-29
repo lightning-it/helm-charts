@@ -1,0 +1,8 @@
+# helm
+charts/
+Chart.lock
+*.tgz
+
+# cloudsmith
+config.ini
+credentials.ini

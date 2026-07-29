@@ -1,0 +1,9 @@
+---
+seaweedfs-operator:
+  webhook:
+    podSecurityContext:
+      runAsUser: null
+      fsGroup: null
+  podSecurityContext:
+    runAsUser: null
+    fsGroup: null
