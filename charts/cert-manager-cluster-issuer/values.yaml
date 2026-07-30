@@ -12,7 +12,7 @@ vaultAppRoleSecret:
 # ClusterSecretStore (External Secrets Operator)
 # ============================================================
 css:
-  enabled: false
+  enabled: true
   name: hashicorp-vault
   # Pfad für Vault AppRole Secret
   vaultSecretPath: yourcluster/cert-manager
@@ -25,7 +25,7 @@ css:
 # ============================================================
 issuer:
   vault:
-    enabled: true
+    enabled: false
     name: cluster-issuer
     syncwave: '1'
     hashicorpVault:

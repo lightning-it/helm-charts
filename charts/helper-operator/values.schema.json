@@ -1,0 +1,186 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "console_plugins": {
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "job_namespace": {
+          "type": "string"
+        },
+        "job_service_account": {
+          "type": "string"
+        },
+        "job_service_account_crb": {
+          "type": "string"
+        },
+        "job_service_account_role": {
+          "type": "string"
+        },
+        "plugins": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "syncwave": {
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "operators": {
+      "additionalProperties": true,
+      "properties": {
+        "my-operator": {
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "namespace": {
+              "additionalProperties": true,
+              "properties": {
+                "create": {
+                  "type": "boolean"
+                },
+                "descr": {
+                  "type": "string"
+                },
+                "displayname": {},
+                "name": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "operatorgroup": {
+              "additionalProperties": true,
+              "properties": {
+                "create": {
+                  "type": "boolean"
+                },
+                "notownnamespace": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "subscription": {
+              "additionalProperties": true,
+              "properties": {
+                "approval": {
+                  "type": "string"
+                },
+                "channel": {
+                  "type": "string"
+                },
+                "config": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "env": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "name": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    },
+                    "nodeSelector": {
+                      "additionalProperties": true,
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "value": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "resources": {
+                      "additionalProperties": true,
+                      "properties": {
+                        "limits": {
+                          "additionalProperties": true,
+                          "properties": {
+                            "cpu": {
+                              "type": "string"
+                            },
+                            "memory": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        },
+                        "requests": {
+                          "additionalProperties": true,
+                          "properties": {
+                            "cpu": {
+                              "type": "string"
+                            },
+                            "memory": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "tolerations": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "effect": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "operatorName": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "string"
+                },
+                "sourceNamespace": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            },
+            "syncwave": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "title": "helper-operator values",
+  "type": "object"
+}

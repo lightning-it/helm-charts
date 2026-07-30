@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "seaweedfs-operator": {
+      "additionalProperties": true,
+      "properties": {
+        "podSecurityContext": {
+          "additionalProperties": true,
+          "properties": {
+            "fsGroup": {
+              "type": "integer"
+            },
+            "runAsNonRoot": {
+              "type": "boolean"
+            },
+            "runAsUser": {
+              "type": "integer"
+            },
+            "seccompProfile": {
+              "additionalProperties": true,
+              "properties": {
+                "type": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "probes": {
+          "additionalProperties": true,
+          "properties": {
+            "liveness": {
+              "additionalProperties": true,
+              "properties": {
+                "failureThreshold": {
+                  "type": "integer"
+                },
+                "initialDelaySeconds": {
+                  "type": "integer"
+                },
+                "periodSeconds": {
+                  "type": "integer"
+                },
+                "timeoutSeconds": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "readiness": {
+              "additionalProperties": true,
+              "properties": {
+                "failureThreshold": {
+                  "type": "integer"
+                },
+                "initialDelaySeconds": {
+                  "type": "integer"
+                },
+                "periodSeconds": {
+                  "type": "integer"
+                },
+                "timeoutSeconds": {
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "webhook": {
+          "additionalProperties": true,
+          "properties": {
+            "podSecurityContext": {
+              "additionalProperties": true,
+              "properties": {
+                "fsGroup": {
+                  "type": "integer"
+                },
+                "runAsNonRoot": {
+                  "type": "boolean"
+                },
+                "runAsUser": {
+                  "type": "integer"
+                },
+                "seccompProfile": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "resources": {
+              "additionalProperties": true,
+              "properties": {
+                "limits": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "cpu": {
+                      "type": "string"
+                    },
+                    "memory": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "requests": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "cpu": {
+                      "type": "string"
+                    },
+                    "memory": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "title": "seaweedfs-operator values",
+  "type": "object"
+}

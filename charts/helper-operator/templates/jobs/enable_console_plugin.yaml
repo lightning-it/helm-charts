@@ -18,9 +18,29 @@ spec:
     metadata:
       name: enable-console-plugin
     spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       containers:
         - name: enable-console-plugin
-          image: quay.io/openshift/origin-cli:latest
+          image: quay.io/openshift/origin-cli@sha256:bd0f7e8dab40f6e1da64ca684744527586a9a31c9520190b7527efdd2904e994
+          env:
+            - name: HOME
+              value: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
           command:
             - /bin/bash
             - -c

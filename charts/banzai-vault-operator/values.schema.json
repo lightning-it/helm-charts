@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "vault-operator": {
+      "additionalProperties": true,
+      "properties": {
+        "nodeSelector": {
+          "additionalProperties": true,
+          "properties": {
+            "node-role.kubernetes.io/worker": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "podSecurityContext": {
+          "additionalProperties": true,
+          "properties": {
+            "fsGroup": {
+              "type": "integer"
+            },
+            "runAsGroup": {
+              "type": "integer"
+            },
+            "runAsNonRoot": {
+              "type": "boolean"
+            },
+            "runAsUser": {
+              "type": "integer"
+            },
+            "seccompProfile": {
+              "additionalProperties": true,
+              "properties": {
+                "type": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        },
+        "rbac": {
+          "additionalProperties": true,
+          "properties": {
+            "create": {
+              "type": "boolean"
+            },
+            "pspEnabled": {
+              "type": "boolean"
+            }
+          },
+          "type": "object"
+        },
+        "securityContext": {
+          "additionalProperties": true,
+          "properties": {
+            "allowPrivilegeEscalation": {
+              "type": "boolean"
+            },
+            "capabilities": {
+              "additionalProperties": true,
+              "properties": {
+                "drop": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            },
+            "readOnlyRootFilesystem": {
+              "type": "boolean"
+            },
+            "runAsGroup": {
+              "type": "integer"
+            },
+            "runAsNonRoot": {
+              "type": "boolean"
+            },
+            "runAsUser": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "serviceAccount": {
+          "additionalProperties": true,
+          "properties": {
+            "create": {
+              "type": "boolean"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "title": "banzai-vault-operator values",
+  "type": "object"
+}

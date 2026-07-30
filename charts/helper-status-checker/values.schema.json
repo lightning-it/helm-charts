@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "approver": {
+      "type": "boolean"
+    },
+    "checks": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "installCSV": {
+            "type": "string"
+          },
+          "maxretries": {
+            "type": "integer"
+          },
+          "namespace": {
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "operatorName": {
+            "type": "string"
+          },
+          "serviceAccount": {
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "sleeptimer": {
+            "type": "integer"
+          },
+          "subscriptionName": {
+            "type": "string"
+          },
+          "syncwave": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "enabled": {
+      "type": "boolean"
+    }
+  },
+  "title": "helper-status-checker values",
+  "type": "object"
+}

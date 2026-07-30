@@ -1,0 +1,137 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "allowWildcards": {
+      "type": "boolean"
+    },
+    "api": {
+      "additionalProperties": true,
+      "properties": {
+        "certificateSecret": {
+          "type": "string"
+        },
+        "dnsNames": {
+          "items": {},
+          "type": "array"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "certManager": {
+      "additionalProperties": true,
+      "properties": {
+        "issuerRef": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "certificateSource": {
+      "type": "string"
+    },
+    "externalSecrets": {
+      "additionalProperties": true,
+      "properties": {
+        "api": {
+          "additionalProperties": true,
+          "properties": {
+            "data": {
+              "items": {
+                "additionalProperties": true,
+                "properties": {
+                  "remoteRef": {
+                    "additionalProperties": true,
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "property": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "secretKey": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "ingress": {
+          "additionalProperties": true,
+          "properties": {
+            "data": {
+              "items": {
+                "additionalProperties": true,
+                "properties": {
+                  "remoteRef": {
+                    "additionalProperties": true,
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "property": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "secretKey": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        },
+        "refreshInterval": {
+          "type": "string"
+        },
+        "secretStoreRef": {
+          "additionalProperties": true,
+          "properties": {
+            "kind": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "ingress": {
+      "additionalProperties": true,
+      "properties": {
+        "certificateSecret": {
+          "type": "string"
+        },
+        "dnsNames": {
+          "items": {},
+          "type": "array"
+        },
+        "enabled": {
+          "type": "boolean"
+        }
+      },
+      "type": "object"
+    },
+    "root_ca": {}
+  },
+  "title": "openshift-ingressoperatorpatch values",
+  "type": "object"
+}

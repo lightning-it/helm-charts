@@ -125,6 +125,13 @@ webhook:
       - ALL
     readOnlyRootFilesystem: true
     runAsNonRoot: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
   certgen:
     registry: registry.k8s.io
     repository: ingress-nginx/kube-webhook-certgen
@@ -144,12 +151,26 @@ resources:
     # -- seaweedfs-operator containers' memory request (how much is requested by default)
     memory: 50Mi
 
+probes:
+  liveness:
+    initialDelaySeconds: 10
+    periodSeconds: 20
+    timeoutSeconds: 3
+    failureThreshold: 3
+  readiness:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 3
+    failureThreshold: 3
+
 ## Security context for pods
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 65532
   fsGroup: 65532
+  seccompProfile:
+    type: RuntimeDefault
 
 ## Security context for containers
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
