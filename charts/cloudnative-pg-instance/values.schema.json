@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "backup": {
+      "additionalProperties": true,
+      "properties": {
+        "barmanCloudimageName": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "retention": {
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "image": {
+              "type": "string"
+            },
+            "schedule": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "retentionPolicy": {
+          "type": "string"
+        },
+        "s3Backup": {
+          "additionalProperties": true,
+          "properties": {
+            "bucketName": {
+              "type": "string"
+            },
+            "createBucket": {
+              "type": "boolean"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "endpointCa": {
+              "type": "boolean"
+            },
+            "endpointUrl": {
+              "type": "string"
+            },
+            "schedule": {
+              "type": "string"
+            },
+            "storageClass": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "s3Recovery": {
+          "additionalProperties": true,
+          "properties": {
+            "bucketName": {
+              "type": "string"
+            },
+            "credentialsSecretName": {},
+            "enabled": {
+              "type": "boolean"
+            },
+            "endpointUrl": {
+              "type": "string"
+            },
+            "externalClusters": {},
+            "pitr": {},
+            "walMaxParallel": {
+              "type": "integer"
+            }
+          },
+          "type": "object"
+        },
+        "target": {
+          "type": "string"
+        },
+        "useBarmanCloudPlugin": {
+          "type": "boolean"
+        },
+        "volumeSnapShots": {
+          "additionalProperties": true,
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "schedule": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "cluster": {
+      "additionalProperties": true,
+      "properties": {
+        "database": {
+          "type": "string"
+        },
+        "enablePodMonitor": {
+          "type": "boolean"
+        },
+        "image": {
+          "type": "string"
+        },
+        "instances": {
+          "type": "integer"
+        },
+        "maxSyncReplicas": {
+          "type": "integer"
+        },
+        "minSyncReplicas": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "parameters": {
+          "additionalProperties": true,
+          "properties": {
+            "synchronous_commit": {
+              "type": "string"
+            },
+            "wal_keep_size": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "primaryUpdateMethod": {
+          "type": "string"
+        },
+        "primaryUpdateStrategy": {
+          "type": "string"
+        },
+        "resources": {},
+        "storageClass": {
+          "type": "string"
+        },
+        "storageSize": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "walStorageClass": {
+          "type": "string"
+        },
+        "walStorageSize": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "envName": {
+      "type": "string"
+    },
+    "externalSecrets": {
+      "additionalProperties": true,
+      "properties": {
+        "clusterSecretStore": {
+          "type": "string"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "rootCaSecretPath": {
+          "type": "string"
+        },
+        "secretPath": {}
+      },
+      "type": "object"
+    }
+  },
+  "title": "cloudnative-pg-instance values",
+  "type": "object"
+}

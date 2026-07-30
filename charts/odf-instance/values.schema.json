@@ -1,0 +1,194 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "storagecluster": {
+      "additionalProperties": true,
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "full_deployment": {
+          "additionalProperties": true,
+          "properties": {
+            "default_node_label": {
+              "type": "string"
+            },
+            "enabled": {
+              "type": "boolean"
+            },
+            "encryption": {
+              "additionalProperties": true,
+              "properties": {
+                "enable": {
+                  "type": "boolean"
+                }
+              },
+              "type": "object"
+            },
+            "nfs": {
+              "type": "string"
+            },
+            "placement": {
+              "additionalProperties": true,
+              "properties": {
+                "all": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "tolerations": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "effect": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "mds": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "tolerations": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "effect": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "noobaCore": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "tolerations": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "effect": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                },
+                "rgw": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "tolerations": {
+                      "items": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "effect": {
+                            "type": "string"
+                          },
+                          "key": {
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      },
+                      "type": "array"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "storageDeviceSets": {
+              "items": {
+                "additionalProperties": true,
+                "properties": {
+                  "count": {
+                    "type": "integer"
+                  },
+                  "dataPVCTemplate": {
+                    "additionalProperties": true,
+                    "properties": {
+                      "spec": {
+                        "additionalProperties": true,
+                        "properties": {
+                          "resources": {
+                            "additionalProperties": true,
+                            "properties": {
+                              "requests": {
+                                "additionalProperties": true,
+                                "properties": {
+                                  "storage": {
+                                    "type": "string"
+                                  }
+                                },
+                                "type": "object"
+                              }
+                            },
+                            "type": "object"
+                          },
+                          "storageClassName": {
+                            "type": "string"
+                          },
+                          "volumeMode": {
+                            "type": "string"
+                          }
+                        },
+                        "type": "object"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "replica": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "title": "odf-instance values",
+  "type": "object"
+}

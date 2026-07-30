@@ -1,18 +1,31 @@
 ---
-securityContext:
-  runAsUser: null
-  runAsGroup: null
-  fsGroup: null
+vault-operator:
+  podSecurityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    seccompProfile:
+      type: RuntimeDefault
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 65534
+    runAsGroup: 65534
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
 
-rbac:
-  create: true
-  pspEnabled: false
+  rbac:
+    create: true
+    pspEnabled: false
 
 # ServiceAccount konfigurieren
-serviceAccount:
-  create: true
-  name: vault-operator
+  serviceAccount:
+    create: true
+    name: vault-operator
 
 # Node Selector
-nodeSelector:
-  node-role.kubernetes.io/worker: ""
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
