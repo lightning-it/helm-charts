@@ -48,6 +48,7 @@ Publishing targets: `none`.
 
 - [RELEASE.md](./RELEASE.md)
 - [TESTING.md](./TESTING.md)
+- [Helm quality and GitOps controls](./HELM_QUALITY.md)
 - [SECURITY.md](./SECURITY.md)
 
 ## Security

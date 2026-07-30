@@ -22,6 +22,8 @@ spec:
       - name: certgen
         image: {{ include "seaweedfs-operator.image" (dict "imageRoot" .Values.webhook.certgen "tag" .Values.webhook.certgen.tag "global" .Values.global) }}
         {{- include "seaweedfs-operator.webhookContainerSecurityContext" . | nindent 8 }}
+        resources:
+          {{- toYaml .Values.webhook.resources | nindent 10 }}
         args:
           - create
           - --host={{ include "seaweedfs-operator.fullname" . }}-webhook,{{ include "seaweedfs-operator.fullname" . }}-webhook.{{ .Release.Namespace }}.svc
@@ -59,6 +61,8 @@ spec:
       - name: certgen
         image: {{ include "seaweedfs-operator.image" (dict "imageRoot" .Values.webhook.certgen "tag" .Values.webhook.certgen.tag "global" .Values.global) }}
         {{- include "seaweedfs-operator.webhookContainerSecurityContext" . | nindent 8 }}
+        resources:
+          {{- toYaml .Values.webhook.resources | nindent 10 }}
         args:
           - patch
           - --webhook-name={{ include "seaweedfs-operator.mutatingWebhookName" . }}
@@ -99,6 +103,8 @@ spec:
       - name: certgen
         image: {{ include "seaweedfs-operator.image" (dict "imageRoot" .Values.webhook.certgen "tag" .Values.webhook.certgen.tag "global" .Values.global) }}
         {{- include "seaweedfs-operator.webhookContainerSecurityContext" . | nindent 8 }}
+        resources:
+          {{- toYaml .Values.webhook.resources | nindent 10 }}
         args:
           - patch
           - --webhook-name={{ include "seaweedfs-operator.validatingWebhookName" . }}

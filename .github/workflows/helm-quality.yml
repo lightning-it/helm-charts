@@ -24,5 +24,28 @@ jobs:
         uses: azure/setup-helm@1a275c3b69536ee54be43f2070a358922e12c8d4 # v4.3.1
         with:
           version: v3.21.3
+
+      - name: Setup Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.14"
+
+      - name: Install policy dependencies
+        run: >-
+          python3 -m pip install
+          --disable-pip-version-check
+          --no-input
+          --require-hashes
+          --requirement .github/requirements/repository-quality.lock
+
+      - name: Verify deterministic values schemas
+        run: python3 scripts/generate-values-schemas.py --check
+
+      - name: Test Helm policy enforcement
+        run: python3 -m unittest discover -s tests
+
       - name: Lint and render every product chart
         run: bash scripts/validate-helm-charts.sh
+
+      - name: Enforce rendered Kubernetes policy
+        run: python3 scripts/validate-kubernetes-policy.py

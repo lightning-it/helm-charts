@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "baseDomain": {
+      "type": "string"
+    },
+    "clustername": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "loglevel": {
+      "type": "string"
+    },
+    "serviceAccount": {
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "size": {
+      "type": "integer"
+    },
+    "vault_externalConfig": {
+      "additionalProperties": true,
+      "properties": {
+        "auth": {
+          "items": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "properties": {
+                  "roles": {
+                    "items": {
+                      "additionalProperties": true,
+                      "properties": {
+                        "bound_service_account_names": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "bound_service_account_namespaces": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "policies": {
+                          "items": {
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "ttl": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "type": "array"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              {
+                "additionalProperties": true,
+                "properties": {
+                  "roles": {
+                    "additionalProperties": true,
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "policies": {
+                        "type": "string"
+                      },
+                      "secret_id_ttl": {
+                        "type": "string"
+                      },
+                      "token_max_ttl": {
+                        "type": "string"
+                      },
+                      "token_num_uses": {
+                        "type": "integer"
+                      },
+                      "token_ttl": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            ]
+          },
+          "type": "array"
+        },
+        "policies": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "rules": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "secrets": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "options": {
+                "additionalProperties": true,
+                "properties": {
+                  "version": {
+                    "type": "integer"
+                  }
+                },
+                "type": "object"
+              },
+              "path": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "title": "banzai-vault-instance values",
+  "type": "object"
+}

@@ -66,6 +66,14 @@ spec:
         - name: https
           containerPort: 9443
           protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.port.name }}
+          {{- toYaml .Values.probes.liveness | nindent 10 }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.port.name }}
+          {{- toYaml .Values.probes.readiness | nindent 10 }}
         {{- if .Values.resources }}
         resources: {{- toYaml .Values.resources | nindent 12 }}
         {{- end }}
