@@ -78,9 +78,20 @@ cannot safely be changed through the pinned upstream chart contract.
   enabled, release evidence, SBOM, provenance, signature, and consumer-side
   verification become mandatory before the publishing gate can be accepted.
 
+## Implementation Evidence
+
+Enterprise Helm quality alignment is tracked in
+[Engineering ADR issue #94][alignment-issue]. The enforcement entered
+`develop` through [PR #114][implementation-pr] at immutable merge commit
+[`dcb6d463`][implementation-commit]. The subsequent protected promotion must
+preserve that exact commit ancestry and pass the same `helm / quality` gate.
+
+[alignment-issue]: https://github.com/lightning-it/helm-charts/issues/94
 [branch-adr]: https://lit.atlassian.net/wiki/spaces/LIT/pages/2878603438
 [ci-adr]: https://lit.atlassian.net/wiki/spaces/LIT/pages/2878636340
 [helm-schema]: https://helm.sh/docs/topics/charts/#schema-files
+[implementation-commit]: https://github.com/lightning-it/helm-charts/commit/dcb6d463e584ce54bec2154b6db51e03e640c739
+[implementation-pr]: https://github.com/lightning-it/helm-charts/pull/114
 [osps-baseline]: https://baseline.openssf.org/
 [pod-security]: https://kubernetes.io/docs/concepts/security/pod-security-standards/
 [probes]: https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/
