@@ -33,6 +33,7 @@ Publishing targets: `none`.
 
 [![CI](https://github.com/lightning-it/helm-charts/actions/workflows/repository-quality.yml/badge.svg?branch=develop)](https://github.com/lightning-it/helm-charts/actions/workflows/repository-quality.yml)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/lightning-it/helm-charts/badge)](https://scorecard.dev/viewer/?uri=github.com/lightning-it/helm-charts)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13886/badge)](https://www.bestpractices.dev/projects/13886)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 <!-- END LIT_QUALITY_BADGES -->
