@@ -83,8 +83,12 @@ cannot safely be changed through the pinned upstream chart contract.
 Enterprise Helm quality alignment is tracked in
 [Engineering ADR issue #94][alignment-issue]. The enforcement entered
 `develop` through [PR #114][implementation-pr] at immutable merge commit
-[`dcb6d463`][implementation-commit]. The subsequent protected promotion must
-preserve that exact commit ancestry and pass the same `helm / quality` gate.
+[`dcb6d463`][implementation-commit]. Protected [promotion PR #116][promotion-pr]
+preserved that ancestry and merged to `main` as
+[`04d37e776`][promotion-commit]. Exact-head Helm Quality, Repository Quality,
+and CodeQL runs passed on that merge commit. The following reviewed back-sync
+records the promotion merge in `develop` so future changes retain a common,
+auditable branch history.
 
 [alignment-issue]: https://github.com/lightning-it/helm-charts/issues/94
 [branch-adr]: https://lit.atlassian.net/wiki/spaces/LIT/pages/2878603438
@@ -94,6 +98,8 @@ preserve that exact commit ancestry and pass the same `helm / quality` gate.
 [implementation-pr]: https://github.com/lightning-it/helm-charts/pull/114
 [osps-baseline]: https://baseline.openssf.org/
 [pod-security]: https://kubernetes.io/docs/concepts/security/pod-security-standards/
+[promotion-commit]: https://github.com/lightning-it/helm-charts/commit/04d37e7767260341a1197f716708f5900caa0d19
+[promotion-pr]: https://github.com/lightning-it/helm-charts/pull/116
 [probes]: https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/
 [quality-standard]: https://lit.atlassian.net/wiki/spaces/LIT/pages/2887123058
 [rbac]: https://kubernetes.io/docs/concepts/security/rbac-good-practices/
