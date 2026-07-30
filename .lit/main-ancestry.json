@@ -1,0 +1,7 @@
+{
+  "develop_parent_sha": "8d88d05f5b45d7975a3188e8a61cfa5d286cb93f",
+  "main_sha": "64b18c7fdd3e85e0d8a841517f16f3096d9a7adc",
+  "purpose": "Bind the reviewed main ancestry backmerge.",
+  "repository": "lightning-it/helm-charts",
+  "schema_version": 1
+}
