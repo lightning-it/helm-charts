@@ -5,6 +5,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,6 +41,10 @@ class SchemaTests(unittest.TestCase):
                 "additionalProperties": True,
             },
         )
+
+    def test_non_string_key_error_identifies_the_key(self):
+        with self.assertRaisesRegex(ValueError, r"got 7 \(int\)"):
+            schemas.schema_for({7: "invalid"})
 
 
 class PolicyTests(unittest.TestCase):
@@ -116,6 +121,17 @@ waivers:
             path.write_text(content, encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "expired"):
                 policy.load_waivers(path)
+
+    def test_helm_render_has_a_bounded_timeout(self):
+        completed = mock.Mock(stdout="")
+        with mock.patch.object(
+            policy.subprocess, "run", return_value=completed
+        ) as run:
+            self.assertEqual(policy.render_chart(ROOT / "charts" / "test"), [])
+        self.assertEqual(
+            run.call_args.kwargs["timeout"],
+            policy.HELM_TEMPLATE_TIMEOUT_SECONDS,
+        )
 
 
 if __name__ == "__main__":

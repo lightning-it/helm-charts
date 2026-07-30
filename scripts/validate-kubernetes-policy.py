@@ -22,6 +22,7 @@ WORKLOAD_KINDS = frozenset(
 LONG_RUNNING_KINDS = frozenset({"DaemonSet", "Deployment", "StatefulSet"})
 RBAC_KINDS = frozenset({"ClusterRole", "Role"})
 REQUIRED_RESOURCE_KEYS = ("cpu", "memory")
+HELM_TEMPLATE_TIMEOUT_SECONDS = 120
 
 
 @dataclass(frozen=True)
@@ -264,6 +265,7 @@ def render_chart(chart_dir: Path) -> list[dict[str, Any]]:
         check=True,
         capture_output=True,
         text=True,
+        timeout=HELM_TEMPLATE_TIMEOUT_SECONDS,
     )
     return list(yaml.safe_load_all(result.stdout))
 
@@ -357,6 +359,28 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (OSError, subprocess.CalledProcessError, ValueError, yaml.YAMLError) as exc:
+    except subprocess.TimeoutExpired as exc:
+        print(
+            "ERROR: helm template timed out after "
+            f"{exc.timeout} seconds: {' '.join(str(part) for part in exc.cmd)}",
+            file=sys.stderr,
+        )
+        if exc.stdout:
+            print(str(exc.stdout).rstrip(), file=sys.stderr)
+        if exc.stderr:
+            print(str(exc.stderr).rstrip(), file=sys.stderr)
+        raise SystemExit(2) from exc
+    except subprocess.CalledProcessError as exc:
+        print(
+            "ERROR: helm template failed with exit code "
+            f"{exc.returncode}: {' '.join(str(part) for part in exc.cmd)}",
+            file=sys.stderr,
+        )
+        if exc.stdout:
+            print(str(exc.stdout).rstrip(), file=sys.stderr)
+        if exc.stderr:
+            print(str(exc.stderr).rstrip(), file=sys.stderr)
+        raise SystemExit(2) from exc
+    except (OSError, ValueError, yaml.YAMLError) as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         raise SystemExit(2) from exc

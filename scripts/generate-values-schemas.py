@@ -41,9 +41,13 @@ def schema_for(value: object) -> dict[str, Any]:
         return {"type": "array", "items": items}
     if isinstance(value, dict):
         properties = {}
-        for key, child in sorted(value.items()):
+        for key in value:
             if not isinstance(key, str):
-                raise ValueError("values keys must be strings")
+                raise ValueError(
+                    "values keys must be strings; "
+                    f"got {key!r} ({type(key).__name__})"
+                )
+        for key, child in sorted(value.items()):
             properties[key] = schema_for(child)
         return {
             "type": "object",
