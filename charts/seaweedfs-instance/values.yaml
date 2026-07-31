@@ -1,0 +1,237 @@
+# -------------------------------------------------------------------
+# Seaweed Cluster (main resource)
+# -------------------------------------------------------------------
+seaweed:
+  enabled: false
+  name: seaweed-sample
+  namespace: default
+  spec:
+    admin: {}
+    worker:
+      replicas: 1
+      jobType: "default"
+    filer:
+      config: |
+        [leveldb2]
+        enabled = true
+        dir = "/data/filerldb2"
+      iam: true
+      replicas: 2
+      s3:
+        enabled: true
+    image: chrislusf/seaweedfs:latest
+    master:
+      replicas: 3
+      volumeSizeLimitMB: 1024
+    volume:
+      replicas: 2
+      requests:
+        storage: 1Gi
+    volumeServerDiskCount: 1
+
+# -------------------------------------------------------------------
+# Buckets (declarative S3 buckets)
+# -------------------------------------------------------------------
+buckets:
+  # List of buckets
+  - enabled: false
+    name: photos
+    namespace: media
+    spec:
+      clusterRef:
+        name: seaweed-sample
+        namespace: default
+      # adoptExisting: true   # optional: adopt an existing bucket
+
+# -------------------------------------------------------------------
+# Bucket Lifecycle Policies
+# -------------------------------------------------------------------
+bucketLifecyclePolicies:
+  - enabled: false
+    name: expire-logs
+    namespace: media
+    spec:
+      bucketRef:
+        name: photos
+      rules:
+        - id: expire-archived
+          prefix: archived/
+          status: Enabled
+          expiration:
+            days: 90
+        - id: cleanup-incomplete-uploads
+          status: Enabled
+          abortIncompleteMultipartUpload:
+            daysAfterInitiation: 7
+        - id: prune-old-versions
+          status: Enabled
+          noncurrentVersionExpiration:
+            noncurrentDays: 30
+            newerNoncurrentVersions: 3
+
+# -------------------------------------------------------------------
+# AdminScripts (scheduled weed-shell scripts)
+# -------------------------------------------------------------------
+adminScripts:
+  - enabled: false
+    name: nightly-balance
+    namespace: default
+    spec:
+      clusterRef:
+        name: seaweed-sample
+      schedule: "0 2 * * *"
+      script: |
+        lock
+        volume.balance -force
+        volume.fix.replication
+        unlock
+      # Optional:
+      # concurrencyPolicy: Forbid
+      # timeZone: Etc/UTC
+      # suspend: false
+      # successfulJobsHistoryLimit: 3
+      # failedJobsHistoryLimit: 1
+      # backoffLimit: 0
+      # activeDeadlineSeconds: 3600
+      # image: chrislusf/seaweedfs:latest
+      # credentialsSecret:
+      #   name: seaweed-admin-credentials
+      # resources:
+      #   requests:
+      #     cpu: 100m
+      #     memory: 128Mi
+
+# -------------------------------------------------------------------
+# Migration: switch from legacy volume to volumeTopology
+# -------------------------------------------------------------------
+migration:
+  enabled: false
+  name: seaweed-migration-example
+  namespace: default
+  spec:
+    image: chrislusf/seaweedfs:latest
+    volumeServerDiskCount: 1
+    master:
+      replicas: 3
+      volumeSizeLimitMB: 1024
+      defaultReplication: "210"
+    volume:
+      replicas: 0
+      requests:
+        storage: 10Gi
+    volumeTopology:
+      dc1-rack1:
+        replicas: 3
+        rack: "rack1"
+        dataCenter: "dc1"
+        nodeSelector:
+          topology.kubernetes.io/zone: "us-west-2a"
+        requests:
+          storage: 10Gi
+          cpu: "1"
+          memory: "2Gi"
+        limits:
+          cpu: "2"
+          memory: "4Gi"
+      dc1-rack2:
+        replicas: 2
+        rack: "rack2"
+        dataCenter: "dc1"
+        nodeSelector:
+          topology.kubernetes.io/zone: "us-west-2b"
+        requests:
+          storage: 10Gi
+          cpu: "500m"
+          memory: "1.5Gi"
+        limits:
+          cpu: "1.5"
+          memory: "3Gi"
+    filer:
+      replicas: 2
+      s3:
+        enabled: true
+      config: |
+        [leveldb2]
+        enabled = true
+        dir = "/data/filerldb2"
+
+# -------------------------------------------------------------------
+# S3 Identity (users/groups) – declarative IAM identities
+# -------------------------------------------------------------------
+s3identities:
+  - enabled: false
+    name: alice
+    namespace: default
+    spec:
+      seaweedRef:
+        name: seaweed-sample
+      # Identity can be a User or a Group
+      # type: User or Group
+      # parent: "..."  # optional, for group hierarchy
+      # policies: []   # optional, direct policy assignment (alternative to Binding)
+      # credentials: [] # optional, directly attached credentials
+      # Additional fields depend on the CRD
+      # Example:
+      account:
+        # displayName: "Alice Developer"
+        # email: "alice@example.com"
+
+# -------------------------------------------------------------------
+# S3 Credentials (access keys for identities)
+# -------------------------------------------------------------------
+s3credentials:
+  - enabled: false
+    name: alice-keys
+    namespace: default
+    spec:
+      seaweedRef:
+        name: seaweed-sample
+      # Reference to the identity (user or group)
+      identityRef:
+        name: alice
+      reclaimPolicy: Delete
+      secretRef:                           
+        accessKeyField: accessKey          
+        name: alice-s3-secret               
+        secretKeyField: secretKey
+
+# -------------------------------------------------------------------
+# S3 Policies (IAM policy documents)
+# -------------------------------------------------------------------
+s3policies:
+  - enabled: false
+    name: readwrite-bucket
+    namespace: default
+    spec:
+      seaweedRef:
+        name: seaweed-sample
+      statements:
+        - effect: Allow
+          actions:
+            - s3:ListBucket
+          resources:
+            - my-bucket
+        - effect: Allow
+          actions:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          resources:
+            - my-bucket/uploads/*
+
+# -------------------------------------------------------------------
+# S3 Policy Bindings (link identities to policies)
+# -------------------------------------------------------------------
+s3policybindings:
+  - enabled: false
+    name: alice-readwrite-binding
+    namespace: default
+    spec:
+      seaweedRef:
+        name: seaweed-sample
+      subjects:
+        - kind: S3Identity
+          name: alice
+      # Reference to the policy
+      policyRef:
+        name: readwrite-bucket

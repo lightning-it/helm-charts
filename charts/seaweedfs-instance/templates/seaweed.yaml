@@ -1,0 +1,11 @@
+{{- if .Values.seaweed.enabled }}
+apiVersion: seaweed.seaweedfs.com/v1
+kind: Seaweed
+metadata:
+  name: {{ .Values.seaweed.name }}
+  namespace: {{ .Values.seaweed.namespace }}
+  labels:
+    {{- include "seaweedfs-instance.labels" . | nindent 4 }}
+spec:
+  {{- toYaml .Values.seaweed.spec | nindent 2 }}
+{{- end }}

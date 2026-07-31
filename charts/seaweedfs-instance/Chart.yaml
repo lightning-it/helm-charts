@@ -1,0 +1,6 @@
+apiVersion: v2
+name: seaweedfs-instance
+description: A Helm chart for provisioning all SeaweedFS custom resources (Seaweed, Bucket, Identities, Credentials, Policies, BucketLifecyclePolicy, AdminScript, Migration)
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

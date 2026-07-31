@@ -1,0 +1,11 @@
+{{- if .Values.migration.enabled }}
+apiVersion: seaweed.seaweedfs.com/v1
+kind: Seaweed
+metadata:
+  name: {{ .Values.migration.name }}
+  namespace: {{ .Values.migration.namespace }}
+  labels:
+    {{- include "seaweedfs-instance.labels" . | nindent 4 }}
+spec:
+  {{- toYaml .Values.migration.spec | nindent 2 }}
+{{- end }}
