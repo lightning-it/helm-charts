@@ -1,4 +1,5 @@
-{{- if .Values.webhook.enabled -}}
+{{- $certManager := default dict .Values.webhook.certManager -}}
+{{- if and .Values.webhook.enabled (not $certManager.enabled) -}}
 ---
 apiVersion: batch/v1
 kind: Job
@@ -122,6 +123,7 @@ metadata:
   annotations:
     "helm.sh/hook": pre-install,pre-upgrade
     "helm.sh/hook-weight": "-10"
+{{- if .Values.rbac.create }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -190,4 +192,5 @@ subjects:
   - kind: ServiceAccount
     name: {{ include "seaweedfs-operator.fullname" . }}-update-webhook-certificates
     namespace: {{ .Release.Namespace }}
+{{- end }}
 {{- end -}}
