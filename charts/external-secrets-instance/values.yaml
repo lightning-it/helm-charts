@@ -1,4 +1,5 @@
 ---
+openshift: false
 css_name: hashicorp-vault
 css_condition_namespaces:
   - openshift-gitops
