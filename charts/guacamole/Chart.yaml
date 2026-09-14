@@ -1,0 +1,10 @@
+apiVersion: v2
+name: guacamole
+description: Master chart to deploy guacamole
+version: 1.0.0
+home: >-
+  https://github.com/lightning-it/helm-charts/tree/main/charts/guacamole
+dependencies:
+  - name: guacamole
+    version: 1.5.2
+    repository: oci://ghcr.io/helmforgedev/helm

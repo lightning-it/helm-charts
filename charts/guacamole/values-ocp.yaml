@@ -1,0 +1,131 @@
+---
+externalSecrets:
+  enabled: true
+  cluster_secret_store: hashicorp-vault
+  secretPath: null # calculate path by default
+guacamole:
+  guacd:
+    # -- guacd log level (info, debug, warning, error)
+    logLevel: info
+
+  # =============================================================================
+  # OIDC (OpenID Connect)
+  # =============================================================================
+
+  oidc:
+    # -- Enable OpenID Connect authentication
+    enabled: false
+    # -- Authorization endpoint URI
+    authorizationEndpoint: ""
+    # -- JWKS endpoint URI for token validation
+    jwksEndpoint: ""
+    # -- Expected token issuer
+    issuer: ""
+    # -- Client ID
+    clientId: ""
+    # -- Redirect URI (auto-detected from ingress if empty)
+    redirectUri: ""
+    # -- Space-separated scopes
+    scope: "openid email profile"
+    # -- JWT claim for username
+    usernameClaim: "preferred_username"
+    # -- JWT claim for groups
+    groupsClaim: "groups"
+    # -- Allowed clock skew in seconds
+    allowedClockSkew: 30
+    # -- Maximum token validity in minutes
+    maxTokenValidity: 300
+
+  # =============================================================================
+  # SAML
+  # =============================================================================
+
+  saml:
+    # -- Enable SAML authentication
+    enabled: false
+    # -- IdP metadata URL
+    idpMetadataUrl: ""
+    # -- IdP URL (used if metadata URL unavailable)
+    idpUrl: ""
+    # -- Service provider entity ID
+    entityId: ""
+    # -- Callback URL (auto-detected from ingress if empty)
+    callbackUrl: ""
+    # -- Enforce certificate validation
+    strict: true
+    # -- Enable debug logging
+    debug: false
+    # -- Compress requests
+    compressRequest: true
+    # -- Compress responses
+    compressResponse: true
+    # -- Group attribute name
+    groupAttribute: "groups"
+
+  # =============================================================================
+  # TOTP (Two-Factor Authentication)
+  # =============================================================================
+
+  totp:
+    # -- Enable TOTP two-factor authentication
+    enabled: false
+
+  # =============================================================================
+  # Database
+  # =============================================================================
+
+  database:
+    # -- Database type: postgresql or mysql
+    type: postgresql
+    waitForConnection:
+      # -- Wait for the configured database socket before starting Guacamole.
+      enabled: true
+      resources: {}
+    # -- External database configuration (used when neither subchart is enabled)
+    external:
+      host: ""
+      port: ""
+      name: guacamole_db
+      username: guacamole_user
+      password: ""
+      # -- Existing secret containing the database password
+      existingSecret: "guacamole-db"
+      # -- Key in the existing secret containing the password
+      existingSecretPasswordKey: rdsPassword
+
+  # =============================================================================
+  # Ingress
+  # =============================================================================
+
+  ingress:
+    # -- Enable ingress for Guacamole
+    enabled: false
+    ingressClassName: openshift-default
+    annotations:
+      route.openshift.io/termination: edge
+    # -- Ingress hosts
+    hosts: []
+      # - host: guacamole.example.com
+      #   paths:
+      #     - path: /
+      #       pathType: Prefix
+    # -- Ingress TLS configuration
+    tls: []
+      # - hosts:
+      #     - guacamole.example.com
+      #   secretName: guacamole-tls
+
+  # =============================================================================
+  # Subcharts
+  # =============================================================================
+
+  postgresql:
+    # -- Enable the local PostgreSQL chart
+    enabled: false
+    architecture: standalone
+    auth:
+      database: guacamole_db
+      username: guacamole_user
+      # -- Required when using the PostgreSQL subchart
+    existingSecret: "guacamole-db"
+    existingSecretPostgresPasswordKey: rdsPassword
