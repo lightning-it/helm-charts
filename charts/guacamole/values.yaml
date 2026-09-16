@@ -91,7 +91,7 @@ guacamole:
       # -- Existing secret containing the database password
       existingSecret: "guacamole-db"
       # -- Key in the existing secret containing the password
-      existingSecretPasswordKey: rdsPassword
+      existingSecretPasswordKey: user-password
 
   # =============================================================================
   # Ingress
@@ -128,5 +128,4 @@ guacamole:
       database: guacamole_db
       username: guacamole_user
       # -- Required when using the PostgreSQL subchart
-    existingSecret: "guacamole-db"
-    existingSecretPostgresPasswordKey: rdsPassword
+      existingSecret: "guacamole-db"
