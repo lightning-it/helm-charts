@@ -128,4 +128,3 @@ guacamole:
       username: guacamole_user
       # -- Required when using the PostgreSQL subchart
     existingSecret: "guacamole-db"
-    existingSecretPostgresPasswordKey: rdsPassword
