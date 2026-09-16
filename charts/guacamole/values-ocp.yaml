@@ -7,7 +7,9 @@ guacamole:
   guacd:
     # -- guacd log level (info, debug, warning, error)
     logLevel: info
-
+    extraEnv:
+      - name: HOME
+        value: /tmp
   # =============================================================================
   # OIDC (OpenID Connect)
   # =============================================================================
